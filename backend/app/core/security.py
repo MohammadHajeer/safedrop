@@ -13,6 +13,10 @@ from app.core.config import settings
 import hashlib
 import secrets
 
+from cryptography.fernet import Fernet
+
+fernet = Fernet(settings.drop_encryption_key)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 password_hash = PasswordHash.recommended()
@@ -79,3 +83,19 @@ def set_refresh_token_cookie(
         expires=expires_at,
         path="/",
     )
+
+
+def generate_share_token() -> str:
+    return secrets.token_urlsafe(32)
+
+
+def hash_share_token(token: str) -> str:
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def encrypt_share_token(token: str) -> str:
+    return fernet.encrypt(token.encode()).decode()
+
+
+def decrypt_share_token(encrypted_token: str) -> str:
+    return fernet.decrypt(encrypted_token.encode()).decode()

@@ -9,7 +9,8 @@ class Settings(BaseSettings):
     jwt_algorithm: str
     access_token_expire_minutes: int
     refresh_token_expire_days: int
-    
+    drop_encryption_key: str
+
     cookie_secure: bool = False
 
 

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routers import auth_router, users_router
+from app.routers import auth_router, users_router, drops_router, share_router
 from app.dependencies.auth import AdminUser
 
 app = FastAPI(
@@ -13,6 +13,8 @@ app = FastAPI(
 
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(drops_router)
+app.include_router(share_router)
 
 
 @app.get("/")

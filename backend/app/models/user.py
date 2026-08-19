@@ -9,9 +9,14 @@ from sqlalchemy import (
     Uuid,
     func,
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.drop import Drop
 
 
 class UserType(str, Enum):
@@ -22,6 +27,10 @@ class UserType(str, Enum):
 class User(Base):
     __tablename__ = "users"
     __table_args__ = {"schema": "public"}
+
+    created_drops: Mapped[list["Drop"]] = relationship(
+        back_populates="owner",
+    )
 
     id: Mapped[UUID] = mapped_column(
         Uuid(as_uuid=True),

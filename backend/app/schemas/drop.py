@@ -1,0 +1,75 @@
+from datetime import datetime, timedelta, timezone
+from typing import Annotated
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+DropTitle = Annotated[str, Field(min_length=3, max_length=100)]
+DropContent = Annotated[str, Field(min_length=1, max_length=10_000)]
+MaxViews = Annotated[int, Field(ge=1, le=100)]
+
+
+class DropCreate(BaseModel):
+    title: DropTitle
+    content: DropContent
+    expires_at: datetime
+    max_views: MaxViews = 1
+
+    @field_validator("expires_at")
+    @classmethod
+    def validate_expires_at(cls, value: datetime) -> datetime:
+        if value.tzinfo is None:
+            raise ValueError("Expiration must include a timezone")
+
+        now = datetime.now(timezone.utc)
+
+        if value <= now:
+            raise ValueError("Expiration must be in the future")
+
+        if value > now + timedelta(days=30):
+            raise ValueError("Expiration cannot be more than 30 days from now")
+
+        return value
+
+
+class DropOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    owner_id: UUID
+    title: str
+    content: str
+    expires_at: datetime
+    max_views: int
+    view_count: int
+    revoked_at: datetime | None
+    created_at: datetime
+    updated_at: datetime
+    last_accessed_at: datetime | None
+
+
+class DropCreateResponse(DropOut):
+    share_token: str
+
+
+class DropListResponse(BaseModel):
+    items: list[DropOut]
+    total: int
+    page: int
+    page_size: int
+
+
+class ShareTokenResponse(BaseModel):
+    share_token: str
+
+
+class DropUpdate(BaseModel):
+    title: DropTitle | None = None
+    content: DropContent | None = None
+    max_views: MaxViews | None = None
+
+
+class DropAccessResponse(BaseModel):
+    title: str
+    content: str
+    expires_at: datetime
