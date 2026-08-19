@@ -21,6 +21,7 @@ class UserType(str, Enum):
 
 class User(Base):
     __tablename__ = "users"
+    __table_args__ = {"schema": "public"}
 
     id: Mapped[UUID] = mapped_column(
         Uuid(as_uuid=True),

@@ -1,3 +1,4 @@
+from fastapi import Response
 from fastapi.security import OAuth2PasswordBearer
 
 from datetime import datetime, timedelta, timezone
@@ -8,6 +9,9 @@ import jwt
 from pwdlib import PasswordHash
 
 from app.core.config import settings
+
+import hashlib
+import secrets
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
@@ -48,4 +52,30 @@ def decode_access_token(token: str) -> dict:
         token,
         settings.jwt_secret,
         algorithms=[settings.jwt_algorithm],
+    )
+
+
+def generate_refresh_token() -> str:
+    return secrets.token_urlsafe(48)
+
+
+def hash_refresh_token(token: str) -> str:
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def set_refresh_token_cookie(
+    response: Response,
+    refresh_token: str,
+    expires_at: datetime,
+) -> None:
+    expires_at = expires_at.astimezone(timezone.utc)
+
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=settings.cookie_secure,
+        samesite="lax",
+        expires=expires_at,
+        path="/",
     )
