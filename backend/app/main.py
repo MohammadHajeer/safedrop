@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.routers import auth_router, users_router
+from app.dependencies.auth import AdminUser
 
 app = FastAPI(
     title="SafeDrop API",
@@ -17,3 +18,8 @@ app.include_router(users_router)
 @app.get("/")
 def root():
     return {"message": "SafeDrop API is running"}
+
+
+@app.get("/admin-test")
+def admin_test(admin: AdminUser):
+    return {"message": "You are an admin"}

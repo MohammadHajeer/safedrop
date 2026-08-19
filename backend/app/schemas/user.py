@@ -34,3 +34,21 @@ class UserOut(BaseModel):
     deleted_at: datetime | None = None
     created_at: datetime
     updated_at: datetime
+
+
+class AdminUserCreate(UserCreate):
+    type: UserType
+
+
+class UserListResponse(BaseModel):
+    items: list[UserOut]
+    total: int
+    page: int
+    page_size: int
+
+
+class AdminUserUpdate(BaseModel):
+    first_name: FirstName | None = None
+    last_name: LastName | None = None
+    email: EmailStr | None = None
+    type: UserType | None = None
