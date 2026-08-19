@@ -39,10 +39,6 @@ class User(Base):
         index=True,
     )
 
-    phone: Mapped[str] = mapped_column(String(30))
-    city: Mapped[str] = mapped_column(String(100))
-    age: Mapped[int] = mapped_column(Integer)
-
     type: Mapped[UserType] = mapped_column(
         SQLEnum(UserType, name="user_type"),
         default=UserType.CLIENT,
