@@ -1,8 +1,8 @@
 """create users table
 
-Revision ID: a370032c600e
+Revision ID: 726811c7c2f9
 Revises: 
-Create Date: 2026-08-19 09:26:18.607844
+Create Date: 2026-08-19 09:47:56.577278
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'a370032c600e'
+revision: str = '726811c7c2f9'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,9 +26,8 @@ def upgrade() -> None:
     sa.Column('first_name', sa.String(length=50), nullable=False),
     sa.Column('last_name', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
-    sa.Column('type', sa.Enum('ADMIN', 'CLIENT', name='user_type'), nullable=False),
+    sa.Column('type', sa.Enum('admin', 'client', name='user_type'), nullable=False),
     sa.Column('password_hash', sa.String(length=255), nullable=False),
-    sa.Column('is_deleted', sa.Boolean(), nullable=False),
     sa.Column('deleted_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),

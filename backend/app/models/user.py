@@ -3,10 +3,8 @@ from enum import Enum
 from uuid import UUID, uuid4
 
 from sqlalchemy import (
-    Boolean,
     DateTime,
     Enum as SQLEnum,
-    Integer,
     String,
     Uuid,
     func,
@@ -40,16 +38,15 @@ class User(Base):
     )
 
     type: Mapped[UserType] = mapped_column(
-        SQLEnum(UserType, name="user_type"),
+        SQLEnum(
+            UserType,
+            name="user_type",
+            values_callable=lambda enum: [item.value for item in enum],
+        ),
         default=UserType.CLIENT,
     )
 
     password_hash: Mapped[str] = mapped_column(String(255))
-
-    is_deleted: Mapped[bool] = mapped_column(
-        Boolean,
-        default=False,
-    )
 
     deleted_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
