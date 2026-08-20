@@ -6,6 +6,7 @@ from app.routers import (
     drops_router,
     share_router,
     health_router,
+    guest_router,
 )
 from app.dependencies.auth import AdminUser
 
@@ -33,3 +34,4 @@ app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(drops_router)
 app.include_router(share_router)
+app.include_router(guest_router)

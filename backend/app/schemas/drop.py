@@ -44,7 +44,7 @@ class DropOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    owner_id: UUID
+    owner_id: UUID | None
     title: str
     content: str
     expires_at: datetime
@@ -95,3 +95,29 @@ class DropAccessResponse(BaseModel):
     title: str
     content: str
     expires_at: datetime
+
+
+GuestMaxViews = Annotated[int, Field(ge=1, le=3)]
+
+
+class GuestDropCreate(BaseModel):
+    title: DropTitle
+    content: DropContent
+    expires_at: datetime
+    max_views: GuestMaxViews = 1
+
+    @field_validator("expires_at")
+    @classmethod
+    def validate_expires_at(cls, value: datetime) -> datetime:
+        if value.tzinfo is None:
+            raise ValueError("Expiration must include a timezone")
+
+        now = datetime.now(timezone.utc)
+
+        if value <= now:
+            raise ValueError("Expiration must be in the future")
+
+        if value > now + timedelta(hours=1):
+            raise ValueError("Guest Drops cannot expire more than 1 hour from now")
+
+        return value

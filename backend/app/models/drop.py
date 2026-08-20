@@ -16,7 +16,7 @@ class Drop(Base):
     __tablename__ = "drops"
     __table_args__ = {"schema": "public"}
 
-    owner: Mapped["User"] = relationship(
+    owner: Mapped["User | None"] = relationship(
         back_populates="created_drops",
     )
 
@@ -26,10 +26,11 @@ class Drop(Base):
         default=uuid4,
     )
 
-    owner_id: Mapped[UUID] = mapped_column(
+    owner_id: Mapped[UUID | None] = mapped_column(
         Uuid(as_uuid=True),
         ForeignKey("public.users.id", ondelete="CASCADE"),
         index=True,
+        nullable=True,
     )
 
     title: Mapped[str] = mapped_column(
