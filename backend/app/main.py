@@ -7,6 +7,7 @@ from app.routers import (
     share_router,
     health_router,
     guest_router,
+    admin_stats_router
 )
 from app.dependencies.auth import AdminUser
 
@@ -31,6 +32,7 @@ def root():
 
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(admin_stats_router)
 app.include_router(users_router)
 app.include_router(drops_router)
 app.include_router(share_router)
