@@ -1,12 +1,20 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 from uuid import UUID
+from enum import Enum
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, computed_field
 
 DropTitle = Annotated[str, Field(min_length=3, max_length=100)]
 DropContent = Annotated[str, Field(min_length=1, max_length=10_000)]
 MaxViews = Annotated[int, Field(ge=1, le=100)]
+
+
+class DropStatus(str, Enum):
+    ACTIVE = "active"
+    EXPIRED = "expired"
+    REVOKED = "revoked"
+    CONSUMED = "consumed"
 
 
 class DropCreate(BaseModel):
@@ -46,6 +54,20 @@ class DropOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     last_accessed_at: datetime | None
+
+    @computed_field
+    @property
+    def status(self) -> DropStatus:
+        if self.revoked_at is not None:
+            return DropStatus.REVOKED
+
+        if self.expires_at <= datetime.now(timezone.utc):
+            return DropStatus.EXPIRED
+
+        if self.view_count >= self.max_views:
+            return DropStatus.CONSUMED
+
+        return DropStatus.ACTIVE
 
 
 class DropCreateResponse(DropOut):

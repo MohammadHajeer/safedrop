@@ -20,6 +20,7 @@ from app.schemas.drop import (
     DropListResponse,
     ShareTokenResponse,
     DropUpdate,
+    DropStatus,
 )
 
 router = APIRouter(
@@ -38,15 +39,38 @@ def get_my_drops(
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 10,
     search: Annotated[str | None, Query(max_length=100)] = None,
+    drop_status: Annotated[
+        DropStatus,
+        Query(alias="status"),
+    ] = DropStatus.ACTIVE,
 ):
     now = datetime.now(timezone.utc)
 
     query = select(Drop).where(
         Drop.owner_id == current_user.id,
-        Drop.revoked_at.is_(None),
-        Drop.expires_at > now,
-        Drop.view_count < Drop.max_views,
     )
+
+    if drop_status == DropStatus.REVOKED:
+        query = query.where(
+            Drop.revoked_at.is_not(None),
+        )
+    elif drop_status == DropStatus.EXPIRED:
+        query = query.where(
+            Drop.revoked_at.is_(None),
+            Drop.expires_at <= now,
+        )
+    elif drop_status == DropStatus.CONSUMED:
+        query = query.where(
+            Drop.revoked_at.is_(None),
+            Drop.expires_at > now,
+            Drop.max_views <= Drop.view_count,
+        )
+    else:  # Active
+        query = query.where(
+            Drop.revoked_at.is_(None),
+            Drop.expires_at > now,
+            Drop.max_views > Drop.view_count,
+        )
 
     if search:
         query = query.where(
