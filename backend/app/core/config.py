@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
     database_url: str
+    test_database_url: str
     jwt_secret: str
     jwt_algorithm: str
     access_token_expire_minutes: int
