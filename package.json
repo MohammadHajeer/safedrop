@@ -1,0 +1,14 @@
+{
+  "name": "safedrop",
+  "private": true,
+  "packageManager": "pnpm@11.20.0",
+  "scripts": {
+    "dev:frontend": "pnpm --dir frontend dev",
+    "dev:backend": "cd backend && .\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --reload",
+    "dev": "concurrently -k -n backend,frontend \"pnpm dev:backend\" \"wait-on http-get://127.0.0.1:8000/health && pnpm dev:frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "wait-on": "^9.1.0"
+  }
+}
