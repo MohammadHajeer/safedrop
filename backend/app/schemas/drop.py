@@ -123,3 +123,7 @@ class GuestDropCreate(BaseModel):
             raise ValueError("Guest Drops cannot expire more than 1 hour from now")
 
         return value
+
+
+class GuestDropCreateResponse(DropCreateResponse):
+    management_token: str
