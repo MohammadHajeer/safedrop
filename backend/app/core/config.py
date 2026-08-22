@@ -12,6 +12,12 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int
     drop_encryption_key: str
 
+    storage_bucket: str
+    aws_access_key_id: str
+    aws_secret_access_key: str
+    aws_endpoint_url_s3: str
+    aws_region: str
+
     cookie_secure: bool = False
 
 

@@ -1,23 +1,30 @@
 from datetime import datetime
+from typing import TYPE_CHECKING, ClassVar
 from uuid import UUID, uuid4
 
+from app.db.base import Base
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import Base
-
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
+    from app.models.drop_file import DropFile
     from app.models.user import User
 
 
 class Drop(Base):
     __tablename__ = "drops"
-    __table_args__ = {"schema": "public"}
+    __table_args__: ClassVar[dict[str, str]] = {
+        "schema": "public",
+    }
 
     owner: Mapped["User | None"] = relationship(
         back_populates="created_drops",
+    )
+
+    files: Mapped[list["DropFile"]] = relationship(
+        back_populates="drop",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
     )
 
     id: Mapped[UUID] = mapped_column(

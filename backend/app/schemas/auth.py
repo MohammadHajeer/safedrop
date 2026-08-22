@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr
 from app.schemas.user import UserOut
+from pydantic import BaseModel, EmailStr
+
 
 class LoginRequest(BaseModel):
     email: EmailStr

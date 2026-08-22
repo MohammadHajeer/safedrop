@@ -1,15 +1,17 @@
 from datetime import datetime
+from typing import ClassVar
 from uuid import UUID, uuid4
 
+from app.db.base import Base
 from sqlalchemy import DateTime, ForeignKey, String, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column
-
-from app.db.base import Base
 
 
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
-    __table_args__ = {"schema": "auth"}
+    __table_args__: ClassVar[dict[str, str]] = {
+        "schema": "auth",
+    }
 
     id: Mapped[UUID] = mapped_column(
         Uuid(as_uuid=True),

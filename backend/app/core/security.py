@@ -1,19 +1,15 @@
-from fastapi import Response
-from fastapi.security import OAuth2PasswordBearer
-
-from datetime import datetime, timedelta, timezone
-from uuid import UUID
-from app.models.user import UserType
-
-import jwt
-from pwdlib import PasswordHash
-
-from app.core.config import settings
-
 import hashlib
 import secrets
+from datetime import datetime, timedelta, timezone
+from uuid import UUID
 
+import jwt
+from app.core.config import settings
+from app.models.user import UserType
 from cryptography.fernet import Fernet
+from fastapi import Response
+from fastapi.security import OAuth2PasswordBearer
+from pwdlib import PasswordHash
 
 fernet = Fernet(settings.drop_encryption_key)
 

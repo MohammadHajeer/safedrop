@@ -1,13 +1,12 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter
-from sqlalchemy import and_, case, func, select
-
 from app.db.database import DbSession
 from app.dependencies.auth import AdminUser
 from app.models.drop import Drop
 from app.models.user import User
 from app.schemas.stats import AdminStatsResponse
+from fastapi import APIRouter
+from sqlalchemy import and_, case, func, select
 
 router = APIRouter(
     prefix="/admin/stats",

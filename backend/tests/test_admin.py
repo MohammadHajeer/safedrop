@@ -1,11 +1,10 @@
 from uuid import UUID
 
+from app.models.refresh_token import RefreshToken
+from app.models.user import User
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from app.models.refresh_token import RefreshToken
-from app.models.user import User
 
 client_payload = {
     "first_name": "John",

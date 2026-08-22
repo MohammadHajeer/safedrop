@@ -1,28 +1,24 @@
-from fastapi import APIRouter, HTTPException, status, Depends, Response, Cookie
+from datetime import datetime, timedelta, timezone
+from typing import Annotated
+from uuid import UUID
+
+from app.core.config import settings
+from app.core.security import (
+    create_access_token,
+    generate_refresh_token,
+    hash_password,
+    hash_refresh_token,
+    set_refresh_token_cookie,
+    verify_password,
+)
+from app.db.database import DbSession
+from app.models import RefreshToken, User
+from app.schemas.auth import AuthResponse
+from app.schemas.user import UserCreate
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from app.core.security import (
-    hash_password,
-    verify_password,
-    create_access_token,
-    generate_refresh_token,
-    hash_refresh_token,
-    set_refresh_token_cookie,
-)
-from app.db.database import DbSession
-from app.models import User, RefreshToken
-from app.schemas.user import UserCreate
-from app.schemas.auth import AuthResponse
-
-from typing import Annotated
-
-from datetime import datetime, timedelta, timezone
-from uuid import UUID
-
-
-from app.core.config import settings
 
 router = APIRouter(tags=["Authentication"])
 

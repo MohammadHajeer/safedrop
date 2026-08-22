@@ -1,21 +1,21 @@
-from fastapi import APIRouter, HTTPException, status, Query
-from sqlalchemy import select, func, update
+from datetime import datetime, timezone
 from typing import Annotated
 from uuid import UUID
-from datetime import datetime, timezone
 
 from app.core.security import hash_password
-from app.dependencies.auth import CurrentUser, AdminUser
+from app.db.database import DbSession
+from app.dependencies.auth import AdminUser, CurrentUser
+from app.models.refresh_token import RefreshToken
+from app.models.user import User, UserType
 from app.schemas.user import (
+    AdminUserCreate,
+    AdminUserUpdate,
+    UserListResponse,
     UserOut,
     UserUpdate,
-    AdminUserCreate,
-    UserListResponse,
-    AdminUserUpdate,
 )
-from app.db.database import DbSession
-from app.models.user import User, UserType
-from app.models.refresh_token import RefreshToken
+from fastapi import APIRouter, HTTPException, Query, status
+from sqlalchemy import func, select, update
 
 router = APIRouter(
     prefix="/users",

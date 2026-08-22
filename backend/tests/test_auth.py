@@ -1,12 +1,10 @@
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
 from uuid import UUID
-
-from sqlalchemy import select
 
 from app.core.security import hash_refresh_token
 from app.models.refresh_token import RefreshToken
+from fastapi.testclient import TestClient
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 register_payload = {
     "first_name": "John",

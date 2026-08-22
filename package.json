@@ -9,9 +9,14 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@neondatabase/config": "^1.0.1",
     "concurrently": "^10.0.5",
     "husky": "^9.1.7",
     "lint-staged": "^17.3.0",
     "wait-on": "^9.1.0"
+  },
+  "dependencies": {
+    "@neon/config": "^1.0.1",
+    "@neon/env": "^1.1.1"
   }
 }

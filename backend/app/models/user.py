@@ -1,19 +1,19 @@
 from datetime import datetime
 from enum import Enum
+from typing import TYPE_CHECKING, ClassVar
 from uuid import UUID, uuid4
 
+from app.db.base import Base
 from sqlalchemy import (
     DateTime,
-    Enum as SQLEnum,
     String,
     Uuid,
     func,
 )
+from sqlalchemy import (
+    Enum as SQLEnum,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from app.db.base import Base
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.drop import Drop
@@ -26,7 +26,9 @@ class UserType(str, Enum):
 
 class User(Base):
     __tablename__ = "users"
-    __table_args__ = {"schema": "public"}
+    __table_args__: ClassVar[dict[str, str]] = {
+        "schema": "public",
+    }
 
     created_drops: Mapped[list["Drop"]] = relationship(
         back_populates="owner",

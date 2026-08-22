@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
+from enum import Enum
 from typing import Annotated
 from uuid import UUID
-from enum import Enum
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, computed_field
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 
 DropTitle = Annotated[str, Field(min_length=3, max_length=100)]
 DropContent = Annotated[str, Field(min_length=1, max_length=10_000)]

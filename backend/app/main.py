@@ -1,15 +1,13 @@
-from fastapi import FastAPI
-
 from app.routers import (
+    admin_stats_router,
     auth_router,
-    users_router,
     drops_router,
-    share_router,
-    health_router,
     guest_router,
-    admin_stats_router
+    health_router,
+    share_router,
+    users_router,
 )
-from app.dependencies.auth import AdminUser
+from fastapi import FastAPI
 
 app = FastAPI(
     title="SafeDrop API",

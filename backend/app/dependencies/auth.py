@@ -2,12 +2,13 @@ from typing import Annotated
 from uuid import UUID
 
 import jwt
-from fastapi import Depends, HTTPException, status
-from sqlalchemy import select
-
 from app.core.security import decode_access_token, oauth2_scheme
 from app.db.database import DbSession
 from app.models.user import User, UserType
+from fastapi import Depends, HTTPException, status
+from sqlalchemy import select
+
+Token = Annotated[str, Depends(oauth2_scheme)]
 
 
 def get_current_user(
@@ -46,6 +47,9 @@ def get_current_user(
     return user
 
 
+CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
 def require_admin(
     current_user: CurrentUser,
 ) -> User:
@@ -58,6 +62,4 @@ def require_admin(
     return current_user
 
 
-Token = Annotated[str, Depends(oauth2_scheme)]
-CurrentUser = Annotated[User, Depends(get_current_user)]
 AdminUser = Annotated[User, Depends(require_admin)]

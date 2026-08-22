@@ -1,19 +1,17 @@
 from collections.abc import Generator
 
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text, delete
-from sqlalchemy.orm import Session, sessionmaker
-
 from app.core.config import settings
 from app.core.security import hash_password
 from app.db.base import Base
 from app.db.database import get_db
 from app.main import app
-
 from app.models.drop import Drop
 from app.models.refresh_token import RefreshToken
 from app.models.user import User, UserType
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, delete, text
+from sqlalchemy.orm import Session, sessionmaker
 
 test_engine = create_engine(settings.test_database_url)
 
