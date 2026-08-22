@@ -82,3 +82,19 @@ def promote_file(
         Bucket=settings.storage_bucket,
         Key=temporary_key,
     )
+
+
+def create_presigned_download_url(
+    storage_key: str,
+    expires_in: int = 300,
+) -> str:
+    client = get_storage_client()
+
+    return client.generate_presigned_url(
+        ClientMethod="get_object",
+        Params={
+            "Bucket": settings.storage_bucket,
+            "Key": storage_key,
+        },
+        ExpiresIn=expires_in,
+    )

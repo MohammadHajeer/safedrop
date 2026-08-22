@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Annotated
 from uuid import UUID
 
+from app.schemas.drop_file import DropAccessFile
 from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 
 DropTitle = Annotated[str, Field(min_length=3, max_length=100)]
@@ -95,6 +96,7 @@ class DropAccessResponse(BaseModel):
     title: str
     content: str
     expires_at: datetime
+    files: list[DropAccessFile] = Field(default_factory=list)
 
 
 GuestMaxViews = Annotated[int, Field(ge=1, le=3)]

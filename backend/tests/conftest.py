@@ -1,5 +1,7 @@
 from collections.abc import Generator
 
+import app.services.storage as storage_service
+import boto3
 import pytest
 from app.core.config import settings
 from app.core.security import hash_password
@@ -118,3 +120,28 @@ def client_headers(client: TestClient) -> dict[str, str]:
     return {
         "Authorization": f"Bearer {access_token}",
     }
+
+
+@pytest.fixture
+def storage_client(monkeypatch: pytest.MonkeyPatch):
+    client = boto3.client(
+        "s3",
+        endpoint_url=settings.test_aws_endpoint_url_s3,
+        aws_access_key_id=settings.test_aws_access_key_id,
+        aws_secret_access_key=settings.test_aws_secret_access_key,
+        region_name=settings.test_aws_region,
+    )
+
+    monkeypatch.setattr(
+        storage_service,
+        "get_storage_client",
+        lambda: client,
+    )
+
+    monkeypatch.setattr(
+        storage_service.settings,
+        "storage_bucket",
+        settings.test_storage_bucket,
+    )
+
+    return client

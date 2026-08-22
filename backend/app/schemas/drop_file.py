@@ -32,3 +32,11 @@ class DropFileOut(BaseModel):
     model_config = {
         "from_attributes": True,
     }
+
+
+class DropAccessFile(BaseModel):
+    id: UUID
+    original_name: str
+    content_type: str
+    size_bytes: int
+    download_url: str

@@ -18,6 +18,12 @@ class Settings(BaseSettings):
     aws_endpoint_url_s3: str
     aws_region: str
 
+    test_storage_bucket: str | None = None
+    test_aws_access_key_id: str | None = None
+    test_aws_secret_access_key: str | None = None
+    test_aws_endpoint_url_s3: str | None = None
+    test_aws_region: str | None = None
+
     cookie_secure: bool = False
 
 
