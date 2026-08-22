@@ -5,7 +5,7 @@
   "scripts": {
     "dev:frontend": "pnpm --dir frontend dev",
     "dev:backend": "cd backend && .\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --reload",
-    "dev": "concurrently -k -n backend,frontend \"pnpm dev:backend\" \"wait-on http-get://127.0.0.1:8000/health && pnpm dev:frontend\"",
+    "dev": "concurrently -n backend,frontend \"pnpm dev:backend\" \"wait-on http-get://127.0.0.1:8000/health && pnpm dev:frontend\"",
     "prepare": "husky"
   },
   "devDependencies": {
