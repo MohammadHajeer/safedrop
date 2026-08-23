@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+
+import {
+  AdminUsersClient,
+  AdminUsersSkeleton,
+} from "@/components/admin/admin-users-client";
+
+export const metadata: Metadata = { title: "Users | Admin" };
+
 export default function AdminUsersPage() {
   return (
-    <main>
-      <h1 className="text-2xl font-semibold">Users management</h1>
-    </main>
+    <Suspense fallback={<AdminUsersSkeleton />}>
+      <AdminUsersClient />
+    </Suspense>
   );
 }

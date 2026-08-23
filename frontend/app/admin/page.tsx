@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
+
+import { AdminOverviewClient } from "@/components/admin/admin-overview-client";
+
+export const metadata: Metadata = { title: "Admin overview" };
+
 export default function AdminPage() {
-  return (
-    <main>
-      <h1 className="text-2xl font-semibold">Admin dashboard</h1>
-    </main>
-  );
+  return <AdminOverviewClient />;
 }

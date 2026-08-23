@@ -27,3 +27,15 @@ def get_active_user_storage(
         )
         or 0
     )
+
+
+def get_platform_storage(db: Session) -> int:
+    """Return bytes reserved by physical objects that have not been cleaned up."""
+    return (
+        db.scalar(
+            select(func.coalesce(func.sum(DropFile.size_bytes), 0)).where(
+                DropFile.storage_deleted_at.is_(None),
+            )
+        )
+        or 0
+    )

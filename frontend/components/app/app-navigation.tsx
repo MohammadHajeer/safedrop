@@ -1,11 +1,14 @@
 "use client";
 
 import {
+  BarChart3Icon,
   CirclePlusIcon,
   LayoutDashboardIcon,
   MenuIcon,
   PackageOpenIcon,
+  ShieldCheckIcon,
   UserRoundIcon,
+  UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,7 +31,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
-const items = [
+const accountItems = [
   {
     href: "/dashboard",
     label: "Dashboard",
@@ -45,44 +48,67 @@ const items = [
   { href: "/profile", label: "Profile", icon: UserRoundIcon },
 ];
 
+const adminItems = [
+  {
+    href: "/admin",
+    label: "Admin overview",
+    icon: ShieldCheckIcon,
+    exact: true,
+  },
+  { href: "/admin/users", label: "Users", icon: UsersIcon },
+  { href: "/admin/stats", label: "Statistics", icon: BarChart3Icon },
+];
+
 function NavigationLinks({
   closeOnNavigate = false,
 }: {
   closeOnNavigate?: boolean;
 }) {
   const pathname = usePathname();
+  const { data: user } = useCurrentUser();
+
+  const renderItems = (items: typeof accountItems) =>
+    items.map((item) => {
+      const active =
+        item.href === "/dashboard/drops"
+          ? pathname.startsWith(item.href) &&
+            pathname !== "/dashboard/drops/new"
+          : item.exact
+            ? pathname === item.href
+            : pathname.startsWith(item.href);
+      const Icon = item.icon;
+      const link = (
+        <Link
+          href={item.href}
+          aria-current={active ? "page" : undefined}
+          className={cn(
+            "flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "hover:bg-muted hover:text-foreground",
+            active && "bg-primary-soft text-primary",
+          )}
+        >
+          <Icon className="size-[18px]" />
+          {item.label}
+        </Link>
+      );
+      return closeOnNavigate ? (
+        <SheetClose key={item.href} nativeButton={false} render={link} />
+      ) : (
+        <div key={item.href}>{link}</div>
+      );
+    });
 
   return (
     <nav aria-label="Authenticated navigation" className="space-y-1">
-      {items.map((item) => {
-        const active =
-          item.href === "/dashboard/drops"
-            ? pathname.startsWith(item.href) &&
-              pathname !== "/dashboard/drops/new"
-            : item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href);
-        const Icon = item.icon;
-        const link = (
-          <Link
-            href={item.href}
-            aria-current={active ? "page" : undefined}
-            className={cn(
-              "flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              "hover:bg-muted hover:text-foreground",
-              active && "bg-primary-soft text-primary",
-            )}
-          >
-            <Icon className="size-[18px]" />
-            {item.label}
-          </Link>
-        );
-        return closeOnNavigate ? (
-          <SheetClose key={item.href} render={link} />
-        ) : (
-          <div key={item.href}>{link}</div>
-        );
-      })}
+      {renderItems(accountItems)}
+      {user?.type === "admin" ? (
+        <>
+          <div className="px-3 pt-5 pb-2 text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+            Administration
+          </div>
+          {renderItems(adminItems)}
+        </>
+      ) : null}
     </nav>
   );
 }
@@ -126,6 +152,11 @@ function AccountSummary() {
             {user.first_name} {user.last_name}
           </p>
           <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+          {user.type === "admin" ? (
+            <p className="mt-1 text-[10px] font-semibold tracking-wide text-primary uppercase">
+              Administrator
+            </p>
+          ) : null}
         </div>
       </div>
       <LogoutButton className="mt-2 h-8 w-full px-2" />

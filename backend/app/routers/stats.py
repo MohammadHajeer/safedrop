@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
 
+from app.core.storage_limits import PLATFORM_MAX_STORAGE
 from app.db.database import DbSession
 from app.dependencies.auth import AdminUser
 from app.models.drop import Drop
 from app.models.user import User
-from app.schemas.stats import AdminStatsResponse
+from app.schemas.stats import AdminStatsResponse, StorageUsageResponse
+from app.services.storage_usage import get_platform_storage
 from fastapi import APIRouter
 from sqlalchemy import and_, case, func, select
 
@@ -109,4 +111,23 @@ def get_admin_stats(
         revoked_drops=drop_stats.revoked_drops,
         guest_drops=drop_stats.guest_drops,
         authenticated_drops=drop_stats.authenticated_drops,
+    )
+
+
+@router.get(
+    "/storage",
+    response_model=StorageUsageResponse,
+)
+def get_admin_storage_usage(
+    admin_user: AdminUser,
+    db: DbSession,
+):
+    used_bytes = get_platform_storage(db)
+    limit_bytes = PLATFORM_MAX_STORAGE
+
+    return StorageUsageResponse(
+        used_bytes=used_bytes,
+        limit_bytes=limit_bytes,
+        remaining_bytes=max(limit_bytes - used_bytes, 0),
+        percentage=min(max((used_bytes / limit_bytes) * 100, 0), 100),
     )

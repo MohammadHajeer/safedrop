@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
+
+import { AdminStatsClient } from "@/components/admin/admin-stats-client";
+
+export const metadata: Metadata = { title: "Statistics | Admin" };
+
 export default function AdminStatsPage() {
-  return (
-    <main>
-      <h1 className="text-2xl font-semibold">Platform statistics</h1>
-    </main>
-  );
+  return <AdminStatsClient />;
 }
