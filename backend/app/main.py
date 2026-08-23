@@ -5,6 +5,7 @@ from app.routers import (
     guest_router,
     health_router,
     share_router,
+    user_stats_router,
     users_router,
 )
 from fastapi import FastAPI
@@ -44,6 +45,7 @@ app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(admin_stats_router)
 app.include_router(users_router)
+app.include_router(user_stats_router)
 app.include_router(drops_router)
 app.include_router(share_router)
 app.include_router(guest_router)

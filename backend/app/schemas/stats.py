@@ -12,3 +12,10 @@ class AdminStatsResponse(BaseModel):
 
     guest_drops: int
     authenticated_drops: int
+
+
+class StorageUsageResponse(BaseModel):
+    used_bytes: int
+    limit_bytes: int
+    remaining_bytes: int
+    percentage: float

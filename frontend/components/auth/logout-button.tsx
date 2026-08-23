@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { LogOutIcon, LoaderCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/api/auth";
+import { cn } from "@/lib/utils";
 
-export function LogoutButton() {
+export function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
@@ -19,5 +22,16 @@ export function LogoutButton() {
     }
   }
 
-  return <button className="rounded border px-3 py-1" onClick={handleLogout} disabled={pending}>{pending ? "Logging out…" : "Log out"}</button>;
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      className={cn("justify-start text-muted-foreground", className)}
+      onClick={handleLogout}
+      disabled={pending}
+    >
+      {pending ? <LoaderCircleIcon className="animate-spin" /> : <LogOutIcon />}
+      {pending ? "Logging out…" : "Log out"}
+    </Button>
+  );
 }

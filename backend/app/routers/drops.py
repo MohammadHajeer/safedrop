@@ -36,6 +36,7 @@ from app.services.storage import (
     get_file_metadata,
     promote_file,
 )
+from app.services.storage_usage import get_active_user_storage
 from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy import func, or_, select
 
@@ -211,6 +212,39 @@ def get_my_drop(
     return drop
 
 
+@router.get(
+    "/{drop_id}/files",
+    response_model=list[DropFileOut],
+)
+def get_my_drop_files(
+    drop_id: UUID,
+    current_user: CurrentUser,
+    db: DbSession,
+):
+    drop = db.scalar(
+        select(Drop).where(
+            Drop.id == drop_id,
+            Drop.owner_id == current_user.id,
+        )
+    )
+
+    if drop is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Drop not found",
+        )
+
+    return db.scalars(
+        select(DropFile)
+        .where(
+            DropFile.drop_id == drop.id,
+            DropFile.uploaded_at.is_not(None),
+            DropFile.storage_deleted_at.is_(None),
+        )
+        .order_by(DropFile.created_at.asc(), DropFile.id.asc())
+    ).all()
+
+
 @router.patch(
     "/{drop_id}",
     response_model=DropOut,
@@ -384,20 +418,7 @@ def create_file_upload(
             detail="This Drop would exceed its storage limit",
         )
 
-    active_user_storage = (
-        db.scalar(
-            select(func.coalesce(func.sum(DropFile.size_bytes), 0))
-            .join(Drop, DropFile.drop_id == Drop.id)
-            .where(
-                Drop.owner_id == current_user.id,
-                Drop.revoked_at.is_(None),
-                Drop.expires_at > now,
-                Drop.view_count < Drop.max_views,
-                DropFile.storage_deleted_at.is_(None),
-            )
-        )
-        or 0
-    )
+    active_user_storage = get_active_user_storage(db, current_user.id, now)
 
     if active_user_storage + payload.size_bytes > USER_MAX_ACTIVE_STORAGE:
         raise HTTPException(

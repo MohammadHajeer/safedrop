@@ -9,7 +9,9 @@ import {
   revokeDrop,
   updateDrop,
   type CreateDropWithFilesInput,
+  type Drop,
   type GetDropsParams,
+  type PaginatedDrops,
   type UpdateDropInput,
 } from "@/lib/api/drops";
 
@@ -21,18 +23,20 @@ export const dropKeys = {
   detail: (dropId: string) => ["drops", "detail", dropId] as const,
 };
 
-export function useDrops(params: GetDropsParams = {}) {
+export function useDrops(params: GetDropsParams = {}, initialData?: PaginatedDrops) {
   return useQuery({
     queryKey: dropKeys.list(params),
     queryFn: () => getDrops(params),
+    initialData,
   });
 }
 
-export function useDrop(dropId: string) {
+export function useDrop(dropId: string, initialData?: Drop) {
   return useQuery({
     queryKey: dropKeys.detail(dropId),
     queryFn: () => getDrop(dropId),
     enabled: Boolean(dropId),
+    initialData,
   });
 }
 
@@ -83,6 +87,11 @@ export function useRevokeDrop() {
     mutationFn: (dropId: string) => revokeDrop(dropId),
 
     onSuccess: async (_, dropId) => {
+      queryClient.setQueryData<Drop>(dropKeys.detail(dropId), (current) =>
+        current
+          ? { ...current, status: "revoked", revoked_at: new Date().toISOString() }
+          : current,
+      );
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: dropKeys.all,

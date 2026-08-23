@@ -3,10 +3,10 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
-export function SafeDropLogo({ className }: { className?: string }) {
+export function SafeDropLogo({ className, href = "/" }: { className?: string; href?: string }) {
   return (
     <Link
-      href="/"
+      href={href}
       aria-label="SafeDrop home"
       className={cn(
         "inline-flex shrink-0 items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background",

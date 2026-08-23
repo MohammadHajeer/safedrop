@@ -58,6 +58,7 @@ export function rejectCrossOriginMutation(
 export async function proxyAuthenticatedRequest(
   request: Request,
   backendPath: string,
+  backendMethod = request.method,
 ): Promise<NextResponse> {
   const rejected = rejectCrossOriginMutation(request);
 
@@ -75,7 +76,7 @@ export async function proxyAuthenticatedRequest(
 
     const body = requestBody(request);
     const result = await authenticatedBackendRequest(backendPath, {
-      method: request.method,
+      method: backendMethod,
       headers,
       body: body ? await body : undefined,
     });
