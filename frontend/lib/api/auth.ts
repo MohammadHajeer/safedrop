@@ -1,74 +1,40 @@
-import { apiFetch, setAccessToken } from "./client";
+import type {
+  LoginInput,
+  RegisterInput,
+  SafeAuthResponse,
+  User,
+} from "@/lib/auth-types";
 
-export type User = {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  type: "client" | "admin";
-};
+import { bffFetch } from "./bff";
 
-export type AuthResponse = {
-  access_token: string;
-  token_type: string;
-  user: User;
-};
+export type { LoginInput, RegisterInput, User } from "@/lib/auth-types";
 
-export type LoginInput = {
-  email: string;
-  password: string;
-};
-
-export type RegisterInput = {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-};
-
-export async function register(input: RegisterInput): Promise<AuthResponse> {
-  const data = await apiFetch<AuthResponse>("/register", {
+export function register(input: RegisterInput): Promise<SafeAuthResponse> {
+  return bffFetch<SafeAuthResponse>("/api/auth/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(input),
   });
-
-  setAccessToken(data.access_token);
-
-  return data;
 }
 
-export async function login(input: LoginInput): Promise<AuthResponse> {
-  const body = new URLSearchParams();
-
-  body.set("username", input.email);
-  body.set("password", input.password);
-
-  const data = await apiFetch<AuthResponse>("/login", {
+export function login(input: LoginInput): Promise<SafeAuthResponse> {
+  return bffFetch<SafeAuthResponse>("/api/auth/login", {
     method: "POST",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
     },
-    body,
+    body: JSON.stringify(input),
   });
-
-  setAccessToken(data.access_token);
-
-  return data;
 }
 
 export async function getMe(): Promise<User> {
-  return apiFetch<User>("/users/me", {
-    auth: true,
-  });
+  return bffFetch<User>("/api/auth/me");
 }
 
 export async function logout(): Promise<void> {
-  await apiFetch<unknown>("/logout", {
+  await bffFetch<unknown>("/api/auth/logout", {
     method: "POST",
   });
-
-  setAccessToken(null);
 }

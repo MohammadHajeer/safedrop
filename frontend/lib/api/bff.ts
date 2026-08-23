@@ -1,16 +1,10 @@
 import { ApiError } from "./errors";
 
-export async function apiFetch<T>(
+export async function bffFetch<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-  if (!apiUrl) {
-    throw new Error("NEXT_PUBLIC_API_URL is not defined");
-  }
-
-  const response = await fetch(`${apiUrl.replace(/\/$/, "")}${path}`, options);
+  const response = await fetch(path, options);
 
   if (!response.ok) {
     let data: unknown = null;
@@ -18,7 +12,7 @@ export async function apiFetch<T>(
     try {
       data = await response.json();
     } catch {
-      // The backend may return an empty response.
+      // The response may not contain JSON.
     }
 
     throw new ApiError(response.status, data);

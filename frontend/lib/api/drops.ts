@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { bffFetch } from "./bff";
 
 const MIB = 1024 * 1024;
 
@@ -66,9 +66,8 @@ export type GetDropsParams = {
 export async function createDrop(
   input: CreateDropInput,
 ): Promise<CreateDropResponse> {
-  return apiFetch<CreateDropResponse>("/drops", {
+  return bffFetch<CreateDropResponse>("/api/drops", {
     method: "POST",
-    auth: true,
     headers: {
       "Content-Type": "application/json",
     },
@@ -80,9 +79,8 @@ export async function presignDropFile(
   dropId: string,
   file: File,
 ): Promise<PresignFileResponse> {
-  return apiFetch<PresignFileResponse>(`/drops/${dropId}/files/presign`, {
+  return bffFetch<PresignFileResponse>(`/api/drops/${dropId}/files/presign`, {
     method: "POST",
-    auth: true,
     headers: {
       "Content-Type": "application/json",
     },
@@ -120,9 +118,8 @@ export async function completeDropFile(
   dropId: string,
   fileId: string,
 ): Promise<DropFile> {
-  return apiFetch<DropFile>(`/drops/${dropId}/files/${fileId}/complete`, {
+  return bffFetch<DropFile>(`/api/drops/${dropId}/files/${fileId}/complete`, {
     method: "POST",
-    auth: true,
   });
 }
 
@@ -193,24 +190,21 @@ export async function getDrops(
 
   const query = searchParams.toString();
 
-  return apiFetch<PaginatedDrops>(`/drops${query ? `?${query}` : ""}`, {
-    auth: true,
-  });
+  return bffFetch<PaginatedDrops>(
+    `/api/drops${query ? `?${query}` : ""}`,
+  );
 }
 
 export async function getDrop(dropId: string): Promise<Drop> {
-  return apiFetch<Drop>(`/drops/${dropId}`, {
-    auth: true,
-  });
+  return bffFetch<Drop>(`/api/drops/${dropId}`);
 }
 
 export async function updateDrop(
   dropId: string,
   input: UpdateDropInput,
 ): Promise<Drop> {
-  return apiFetch<Drop>(`/drops/${dropId}`, {
+  return bffFetch<Drop>(`/api/drops/${dropId}`, {
     method: "PATCH",
-    auth: true,
     headers: {
       "Content-Type": "application/json",
     },
@@ -219,8 +213,7 @@ export async function updateDrop(
 }
 
 export async function revokeDrop(dropId: string): Promise<Drop> {
-  return apiFetch<Drop>(`/drops/${dropId}/revoke`, {
+  return bffFetch<Drop>(`/api/drops/${dropId}/revoke`, {
     method: "POST",
-    auth: true,
   });
 }
