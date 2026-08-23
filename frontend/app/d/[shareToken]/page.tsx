@@ -16,6 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ApiError } from "@/lib/api/errors";
 import { getSharedDrop, type SharedDrop } from "@/lib/api/share";
+import { getCurrentUser } from "@/lib/server/auth";
 
 export const metadata: Metadata = {
   title: "Received Drop",
@@ -41,51 +42,78 @@ function formatExpiration(value: string) {
   }).format(date);
 }
 
-function UnavailableDrop({ serviceError = false }: { serviceError?: boolean }) {
+async function UnavailableDrop({
+  serviceError = false,
+}: {
+  serviceError?: boolean;
+}) {
+  const user = await getCurrentUser();
+  const createHref = user ? "/dashboard/drops/new" : "/create";
+
   return (
     <PublicShell>
-      <main className="relative flex flex-1 items-center px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,var(--primary-soft),transparent_68%)] opacity-70" />
-        <section className="relative mx-auto grid w-full max-w-4xl items-center gap-8 rounded-3xl border bg-card p-6 shadow-[0_18px_50px_-36px_rgba(14,21,20,0.45)] sm:p-10 md:grid-cols-[0.8fr_1.2fr]">
-          <Image
-            src="/illustrations/protected-private.webp"
-            alt="A private SafeDrop that is no longer accessible"
-            width={440}
-            height={293}
-            loading="eager"
-            className="mx-auto h-auto w-full max-w-sm"
-          />
-          <div>
+      <main className="relative flex flex-1 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 -z-20 bg-background" />
+
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-44 left-[-10rem] size-[34rem] rounded-full bg-primary/8 blur-[110px]" />
+          <div className="absolute right-[-12rem] bottom-[-16rem] size-[38rem] rounded-full bg-primary-soft blur-[110px]" />
+        </div>
+
+        <div className="mx-auto grid w-full max-w-[80rem] items-center gap-12 px-4 py-14 sm:px-6 sm:py-18 lg:min-h-[calc(100svh-4.5rem)] lg:grid-cols-[0.9fr_1.1fr] lg:gap-20 lg:px-10 lg:py-20">
+          <div className="relative">
+            <div className="absolute inset-[15%] rounded-full bg-primary/10 blur-3xl" />
+
+            <Image
+              src="/illustrations/protected-private.webp"
+              alt="A SafeDrop that is no longer accessible"
+              width={720}
+              height={480}
+              priority
+              className="relative mx-auto h-auto w-full max-w-xl drop-shadow-[0_28px_38px_rgba(15,75,66,0.12)]"
+            />
+          </div>
+
+          <section className="max-w-xl">
             <Badge
               variant="secondary"
-              className="rounded-full px-3 py-1.5 text-primary"
+              className="rounded-full border-primary/15 bg-primary-soft/75 px-3.5 py-1.5 text-primary"
             >
+              <ShieldCheckIcon />
               Private by design
             </Badge>
-            <h1 className="mt-5 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+
+            <h1 className="mt-6 text-4xl font-semibold tracking-[-0.05em] text-balance sm:text-5xl">
               {serviceError
-                ? "This Drop cannot be opened right now"
-                : "This Drop is no longer available"}
+                ? "This Drop can't be opened right now."
+                : "This Drop is no longer available."}
             </h1>
-            <p className="mt-4 leading-7 text-muted-foreground">
+
+            <p className="mt-5 text-lg leading-8 text-muted-foreground">
               {serviceError
-                ? "SafeDrop could not securely retrieve this Drop. Wait a moment, then ask the sender to confirm the link if the problem continues."
+                ? "SafeDrop could not securely retrieve this Drop. Try again later or ask the sender to confirm the link."
                 : "It may have expired, reached its view limit, been revoked by the sender, or the link may be incomplete."}
             </p>
-            <Alert className="mt-6 border-primary/15 bg-primary-soft/35">
+
+            <Alert className="mt-7 border-primary/15 bg-primary-soft/35">
               <ShieldCheckIcon />
               <AlertTitle>No private details were revealed</AlertTitle>
               <AlertDescription>
-                SafeDrop uses the same unavailable response for private and
-                invalid links.
+                SafeDrop intentionally gives invalid and unavailable links the
+                same response.
               </AlertDescription>
             </Alert>
-            <ButtonLink href="/create" className="mt-7 h-11 rounded-full px-5">
+
+            <ButtonLink
+              href={createHref}
+              size="lg"
+              className="mt-8 h-12 rounded-full px-6"
+            >
               Create your own Drop
               <ArrowRightIcon data-icon="inline-end" />
             </ButtonLink>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
     </PublicShell>
   );
@@ -94,135 +122,175 @@ function UnavailableDrop({ serviceError = false }: { serviceError?: boolean }) {
 function ReceivedDrop({ drop }: { drop: SharedDrop }) {
   return (
     <PublicShell>
-      <main className="relative flex-1 overflow-hidden px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,var(--primary-soft),transparent_68%)] opacity-70" />
-        <div className="relative mx-auto grid w-full max-w-6xl items-start gap-10 lg:grid-cols-[0.68fr_1fr] lg:gap-14">
+      <main className="relative flex-1 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 -z-20 bg-background" />
+
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-44 left-[-10rem] size-[34rem] rounded-full bg-primary/8 blur-[110px]" />
+          <div className="absolute right-[-12rem] bottom-[-16rem] size-[38rem] rounded-full bg-primary-soft blur-[110px]" />
+
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:80px_80px] opacity-[0.08] mask-[linear-gradient(to_bottom,black,transparent_90%)]" />
+        </div>
+
+        <div className="mx-auto grid w-full max-w-[88rem] items-start gap-12 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20 lg:px-10 lg:py-20">
+          {/* STORY */}
           <aside className="lg:sticky lg:top-28">
             <Badge
               variant="secondary"
-              className="rounded-full px-3 py-1.5 text-primary"
+              className="rounded-full border-primary/15 bg-primary-soft/75 px-3.5 py-1.5 text-primary"
             >
-              <ShieldCheckIcon /> Opened securely
+              <ShieldCheckIcon />
+              Opened securely
             </Badge>
-            <h1 className="mt-5 text-4xl font-semibold tracking-[-0.045em] text-balance sm:text-5xl">
-              A Drop has arrived.
+
+            <h1 className="mt-6 max-w-xl text-4xl leading-[0.98] font-semibold tracking-[-0.055em] text-balance sm:text-5xl lg:text-6xl">
+              A Drop
+              <span className="block text-primary">has arrived.</span>
             </h1>
-            <p className="mt-4 max-w-lg text-lg leading-8 text-muted-foreground">
-              The sender chose to share this temporarily. Save anything you need
-              before the Drop expires.
+
+            <p className="mt-6 max-w-lg text-lg leading-8 text-muted-foreground">
+              The sender chose to share this temporarily. Keep anything you need
+              before the Drop reaches its limit.
             </p>
-            <div className="mt-7 flex items-start gap-3 rounded-xl border bg-card/70 p-4 text-sm">
-              <CalendarClockIcon className="mt-0.5 size-4 shrink-0 text-primary" />
+
+            <div className="mt-8 flex max-w-md items-start gap-4 rounded-2xl border bg-background/65 p-4 backdrop-blur-sm">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                <CalendarClockIcon className="size-4.5" />
+              </span>
+
               <div>
-                <p className="font-medium">Available until</p>
+                <p className="text-sm font-semibold">Available until</p>
+
                 <time
                   dateTime={drop.expires_at}
-                  className="mt-1 block text-muted-foreground"
+                  className="mt-1 block text-sm text-muted-foreground"
                 >
                   {formatExpiration(drop.expires_at)}
                 </time>
               </div>
             </div>
-            <div className="mt-7 hidden rounded-3xl border bg-primary-soft/35 p-5 lg:block">
+
+            <div className="relative mt-10 hidden lg:block">
+              <div className="absolute inset-x-[10%] bottom-[5%] h-[50%] rounded-full bg-primary/10 blur-3xl" />
+
               <Image
                 src="/illustrations/received-drop.webp"
                 alt="A document safely received through SafeDrop"
-                width={520}
-                height={347}
-                className="h-auto w-full"
+                width={720}
+                height={480}
+                className="relative h-auto w-full max-w-xl drop-shadow-[0_28px_38px_rgba(15,75,66,0.13)]"
               />
             </div>
           </aside>
 
-          <article className="rounded-2xl border bg-card p-5 shadow-[0_18px_50px_-36px_rgba(14,21,20,0.45)] sm:p-8">
-            <header>
-              <p className="text-sm font-medium text-primary">
-                Shared with you
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.025em] text-pretty sm:text-3xl">
-                {drop.title}
-              </h2>
-            </header>
+          {/* DROP CONTENT */}
+          <article className="relative">
+            <div className="absolute inset-x-[8%] bottom-[-4%] -z-10 h-[60%] rounded-full bg-primary/7 blur-3xl" />
 
-            <Separator className="my-7" />
-
-            <section aria-labelledby="message-heading">
-              <h3
-                id="message-heading"
-                className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
-              >
-                Message
-              </h3>
-              <div className="mt-3 overflow-hidden rounded-xl border bg-muted/25 p-4 sm:p-5">
-                <p className="wrap-break-word whitespace-pre-wrap leading-7">
-                  {drop.content}
+            <div className="rounded-[2rem] border bg-card/96 p-6 shadow-[0_30px_90px_-55px_rgba(14,45,40,0.55)] backdrop-blur-sm sm:p-9">
+              <header>
+                <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+                  Shared with you
                 </p>
-              </div>
-            </section>
 
-            {drop.files.length > 0 ? (
-              <section aria-labelledby="attachments-heading" className="mt-8">
-                <div className="flex items-center justify-between gap-4">
-                  <h3
-                    id="attachments-heading"
-                    className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
-                  >
-                    {drop.files.length === 1 ? "Attachment" : "Attachments"}
-                  </h3>
-                  <span className="text-xs text-muted-foreground">
-                    Temporary download link
-                  </span>
-                </div>
-                <div className="mt-3 space-y-3">
-                  {drop.files.map((file) => (
-                    <Card
-                      key={file.id}
-                      size="sm"
-                      className="gap-0 py-0 shadow-none ring-border"
-                    >
-                      <CardContent className="flex items-center gap-3 p-3 sm:p-4">
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
-                          <FileIcon className="size-5" />
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p
-                            className="truncate font-medium"
-                            title={file.original_name}
-                          >
-                            {file.original_name}
-                          </p>
-                          <p className="mt-1 truncate text-xs text-muted-foreground">
-                            {file.content_type || "File"} ·{" "}
-                            {formatBytes(file.size_bytes)}
-                          </p>
-                        </div>
-                        <ButtonAnchor
-                          variant="outline"
-                          className="h-10 shrink-0 rounded-full px-4"
-                          href={file.download_url}
-                        >
-                          <ArrowDownToLineIcon />
-                          <span className="hidden sm:inline">Download</span>
-                        </ButtonAnchor>
-                      </CardContent>
-                    </Card>
-                  ))}
+                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-pretty sm:text-4xl">
+                  {drop.title}
+                </h2>
+              </header>
+
+              <Separator className="my-8" />
+
+              <section aria-labelledby="message-heading">
+                <h3
+                  id="message-heading"
+                  className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+                >
+                  Message
+                </h3>
+
+                <div className="mt-4 rounded-2xl border bg-muted/20 p-5 sm:p-6">
+                  <p className="wrap-break-word whitespace-pre-wrap leading-7">
+                    {drop.content}
+                  </p>
                 </div>
               </section>
-            ) : (
-              <p className="mt-7 text-sm text-muted-foreground">
-                This Drop does not include an attachment.
-              </p>
-            )}
 
-            <Alert className="mt-8 border-primary/15 bg-primary-soft/35">
-              <ShieldCheckIcon />
-              <AlertTitle>Keep what you need</AlertTitle>
-              <AlertDescription>
-                This page visit has used one of the sender&apos;s allowed views.
-                Avoid refreshing unless necessary.
-              </AlertDescription>
-            </Alert>
+              {drop.files.length > 0 ? (
+                <section aria-labelledby="attachments-heading" className="mt-9">
+                  <div className="flex items-end justify-between gap-4">
+                    <div>
+                      <h3
+                        id="attachments-heading"
+                        className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+                      >
+                        {drop.files.length === 1 ? "Attachment" : "Attachments"}
+                      </h3>
+
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Download anything you need before this Drop becomes
+                        unavailable.
+                      </p>
+                    </div>
+
+                    <span className="hidden text-xs text-muted-foreground sm:block">
+                      Temporary links
+                    </span>
+                  </div>
+
+                  <div className="mt-4 space-y-3">
+                    {drop.files.map((file) => (
+                      <Card
+                        key={file.id}
+                        size="sm"
+                        className="gap-0 overflow-hidden py-0 shadow-none ring-border transition-colors hover:border-primary/25"
+                      >
+                        <CardContent className="flex items-center gap-4 p-4">
+                          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">
+                            <FileIcon className="size-5" />
+                          </span>
+
+                          <div className="min-w-0 flex-1">
+                            <p
+                              className="truncate font-medium"
+                              title={file.original_name}
+                            >
+                              {file.original_name}
+                            </p>
+
+                            <p className="mt-1 truncate text-xs text-muted-foreground">
+                              {file.content_type || "File"} ·{" "}
+                              {formatBytes(file.size_bytes)}
+                            </p>
+                          </div>
+
+                          <ButtonAnchor
+                            variant="outline"
+                            className="h-10 shrink-0 rounded-full px-4"
+                            href={file.download_url}
+                          >
+                            <ArrowDownToLineIcon />
+                            <span className="hidden sm:inline">Download</span>
+                          </ButtonAnchor>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </section>
+              ) : (
+                <div className="mt-8 rounded-xl border border-dashed px-4 py-4 text-sm text-muted-foreground">
+                  This Drop contains a message only—there are no attachments.
+                </div>
+              )}
+
+              <Alert className="mt-9 border-primary/15 bg-primary-soft/35">
+                <ShieldCheckIcon />
+                <AlertTitle>Keep what you need</AlertTitle>
+                <AlertDescription>
+                  Opening this page has used one of the sender&apos;s allowed
+                  views. Avoid refreshing unless you need to.
+                </AlertDescription>
+              </Alert>
+            </div>
           </article>
         </div>
       </main>
