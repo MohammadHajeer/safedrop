@@ -54,14 +54,26 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             <span className="hidden h-5 w-px bg-border sm:block" />
             <span>Temporary sharing, thoughtfully designed.</span>
           </div>
-          <nav aria-label="Footer navigation" className="flex items-center gap-5">
-            <Link className="transition-colors hover:text-foreground" href="/create">
+          <nav
+            aria-label="Footer navigation"
+            className="flex items-center gap-5"
+          >
+            <Link
+              className="transition-colors hover:text-foreground"
+              href="/create"
+            >
               Create a Drop
             </Link>
-            <Link className="transition-colors hover:text-foreground" href="/login">
+            <Link
+              className="transition-colors hover:text-foreground"
+              href="/login"
+            >
               Sign in
             </Link>
-            <Link className="transition-colors hover:text-foreground" href="/register">
+            <Link
+              className="transition-colors hover:text-foreground"
+              href="/register"
+            >
               Register
             </Link>
           </nav>

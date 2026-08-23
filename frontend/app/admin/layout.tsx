@@ -4,7 +4,11 @@ import Link from "next/link";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { requireAdminUser } from "@/lib/server/auth";
 
-export default async function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   await requireAdminUser();
 
   return (

@@ -29,19 +29,22 @@ const steps = [
     icon: FileUpIcon,
     number: "01",
     title: "Create",
-    description: "Add a message, optionally attach a file, then choose when it expires.",
+    description:
+      "Add a message, optionally attach a file, then choose when it expires.",
   },
   {
     icon: Link2Icon,
     number: "02",
     title: "Share",
-    description: "Send one simple link. Recipients do not need a SafeDrop account.",
+    description:
+      "Send one simple link. Recipients do not need a SafeDrop account.",
   },
   {
     icon: Clock3Icon,
     number: "03",
     title: "Let it disappear",
-    description: "The Drop becomes unavailable after its time or view limit is reached.",
+    description:
+      "The Drop becomes unavailable after its time or view limit is reached.",
   },
 ];
 
@@ -93,10 +96,12 @@ export default function Home() {
               </div>
               <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-2">
-                  <ZapIcon className="size-4 text-primary" /> Guest mode in seconds
+                  <ZapIcon className="size-4 text-primary" /> Guest mode in
+                  seconds
                 </span>
                 <span className="inline-flex items-center gap-2">
-                  <ShieldCheckIcon className="size-4 text-primary" /> No recipient account
+                  <ShieldCheckIcon className="size-4 text-primary" /> No
+                  recipient account
                 </span>
               </div>
             </div>
@@ -116,31 +121,46 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="how-it-works" className="scroll-mt-24 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+        <section
+          id="how-it-works"
+          className="scroll-mt-24 px-4 py-20 sm:px-6 sm:py-24 lg:px-8"
+        >
           <div className="mx-auto max-w-7xl">
             <div className="max-w-2xl">
-              <p className="text-sm font-semibold tracking-wide text-primary uppercase">How it works</p>
+              <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+                How it works
+              </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
                 From private thought to temporary link.
               </h2>
               <p className="mt-4 text-lg leading-8 text-muted-foreground">
-                SafeDrop keeps the workflow short and the controls understandable.
+                SafeDrop keeps the workflow short and the controls
+                understandable.
               </p>
             </div>
             <div className="mt-10 grid gap-4 md:grid-cols-3">
               {steps.map((step) => {
                 const Icon = step.icon;
                 return (
-                  <Card key={step.title} className="relative gap-5 p-2 shadow-none ring-border">
+                  <Card
+                    key={step.title}
+                    className="relative gap-5 p-2 shadow-none ring-border"
+                  >
                     <CardContent className="p-5 sm:p-6">
                       <div className="flex items-center justify-between">
                         <span className="flex size-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
                           <Icon className="size-5" />
                         </span>
-                        <span className="font-mono text-xs text-muted-foreground">{step.number}</span>
+                        <span className="font-mono text-xs text-muted-foreground">
+                          {step.number}
+                        </span>
                       </div>
-                      <h3 className="mt-7 text-xl font-semibold tracking-[-0.02em]">{step.title}</h3>
-                      <p className="mt-3 leading-7 text-muted-foreground">{step.description}</p>
+                      <h3 className="mt-7 text-xl font-semibold tracking-[-0.02em]">
+                        {step.title}
+                      </h3>
+                      <p className="mt-3 leading-7 text-muted-foreground">
+                        {step.description}
+                      </p>
                     </CardContent>
                   </Card>
                 );
@@ -149,7 +169,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="privacy" className="scroll-mt-24 border-y bg-card/50 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+        <section
+          id="privacy"
+          className="scroll-mt-24 border-y bg-card/50 px-4 py-20 sm:px-6 sm:py-24 lg:px-8"
+        >
           <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:gap-20">
             <div className="mx-auto max-w-md rounded-3xl border bg-primary-soft/35 p-6 sm:p-8">
               <Image
@@ -161,7 +184,10 @@ export default function Home() {
               />
             </div>
             <div>
-              <Badge variant="secondary" className="rounded-full px-3 py-1.5 text-primary">
+              <Badge
+                variant="secondary"
+                className="rounded-full px-3 py-1.5 text-primary"
+              >
                 <ShieldCheckIcon /> Privacy by limitation
               </Badge>
               <h2 className="mt-5 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
@@ -189,7 +215,9 @@ export default function Home() {
         <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-2xl text-center">
-              <p className="text-sm font-semibold tracking-wide text-primary uppercase">Choose your pace</p>
+              <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+                Choose your pace
+              </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
                 Start as a guest. Sign up when you need more.
               </h2>
@@ -200,12 +228,18 @@ export default function Home() {
                   <span className="flex size-11 items-center justify-center rounded-xl bg-secondary text-foreground">
                     <ZapIcon className="size-5" />
                   </span>
-                  <h3 className="mt-6 text-2xl font-semibold tracking-tight">Guest</h3>
+                  <h3 className="mt-6 text-2xl font-semibold tracking-tight">
+                    Guest
+                  </h3>
                   <p className="mt-2 leading-7 text-muted-foreground">
                     Best for one quick share. Create a Drop without signing in,
-                    attach one file up to 5 MiB, and keep it live for up to an hour.
+                    attach one file up to 5 MiB, and keep it live for up to an
+                    hour.
                   </p>
-                  <ButtonLink href="/create" className="mt-7 h-11 rounded-full px-5">
+                  <ButtonLink
+                    href="/create"
+                    className="mt-7 h-11 rounded-full px-5"
+                  >
                     Create as guest
                     <ArrowRightIcon data-icon="inline-end" />
                   </ButtonLink>
@@ -216,7 +250,9 @@ export default function Home() {
                   <span className="flex size-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
                     <UserRoundIcon className="size-5" />
                   </span>
-                  <h3 className="mt-6 text-2xl font-semibold tracking-tight">SafeDrop account</h3>
+                  <h3 className="mt-6 text-2xl font-semibold tracking-tight">
+                    SafeDrop account
+                  </h3>
                   <p className="mt-2 leading-7 text-muted-foreground">
                     Made for repeat sharing, with longer expiration options,
                     larger file allowances, and a place to manage your Drops.

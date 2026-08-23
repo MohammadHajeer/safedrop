@@ -3,7 +3,13 @@ import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 
-export function SafeDropLogo({ className, href = "/" }: { className?: string; href?: string }) {
+export function SafeDropLogo({
+  className,
+  href = "/",
+}: {
+  className?: string;
+  href?: string;
+}) {
   return (
     <Link
       href={href}

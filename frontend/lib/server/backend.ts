@@ -35,6 +35,8 @@ export function getBackendSetCookies(response: Response): string[] {
     getSetCookie?: () => string[];
   };
 
-  return headers.getSetCookie?.() ??
-    (headers.get("set-cookie") ? [headers.get("set-cookie") as string] : []);
+  return (
+    headers.getSetCookie?.() ??
+    (headers.get("set-cookie") ? [headers.get("set-cookie") as string] : [])
+  );
 }

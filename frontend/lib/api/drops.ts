@@ -47,7 +47,11 @@ export type DropFile = {
   uploaded_at: string;
 };
 
-export type UpdateDropInput = { title?: string; content?: string; max_views?: number };
+export type UpdateDropInput = {
+  title?: string;
+  content?: string;
+  max_views?: number;
+};
 
 export type PaginatedDrops = {
   items: Drop[];
@@ -65,7 +69,13 @@ export type GetDropsParams = {
 
 export type UploadProgress =
   | { stage: "creating"; totalFiles: number }
-  | { stage: "uploading"; file: File; fileIndex: number; completedFiles: number; totalFiles: number }
+  | {
+      stage: "uploading";
+      file: File;
+      fileIndex: number;
+      completedFiles: number;
+      totalFiles: number;
+    }
   | { stage: "complete"; completedFiles: number; totalFiles: number };
 
 export class DropUploadError extends Error {
@@ -81,7 +91,9 @@ export class DropUploadError extends Error {
   }
 }
 
-export async function createDrop(input: CreateDropInput): Promise<CreateDropResponse> {
+export async function createDrop(
+  input: CreateDropInput,
+): Promise<CreateDropResponse> {
   return bffFetch<CreateDropResponse>("/api/drops", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -89,7 +101,10 @@ export async function createDrop(input: CreateDropInput): Promise<CreateDropResp
   });
 }
 
-export async function presignDropFile(dropId: string, file: File): Promise<PresignFileResponse> {
+export async function presignDropFile(
+  dropId: string,
+  file: File,
+): Promise<PresignFileResponse> {
   return bffFetch<PresignFileResponse>(`/api/drops/${dropId}/files/presign`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -101,33 +116,53 @@ export async function presignDropFile(dropId: string, file: File): Promise<Presi
   });
 }
 
-export async function uploadToStorage(file: File, presigned: PresignFileResponse): Promise<void> {
+export async function uploadToStorage(
+  file: File,
+  presigned: PresignFileResponse,
+): Promise<void> {
   const formData = new FormData();
-  for (const [key, value] of Object.entries(presigned.fields)) formData.append(key, value);
+  for (const [key, value] of Object.entries(presigned.fields))
+    formData.append(key, value);
   formData.append("file", file);
-  const response = await fetch(presigned.upload_url, { method: "POST", body: formData });
-  if (!response.ok) throw new Error("The selected file could not be uploaded to storage.");
+  const response = await fetch(presigned.upload_url, {
+    method: "POST",
+    body: formData,
+  });
+  if (!response.ok)
+    throw new Error("The selected file could not be uploaded to storage.");
 }
 
-export async function completeDropFile(dropId: string, fileId: string): Promise<DropFile> {
-  return bffFetch<DropFile>(`/api/drops/${dropId}/files/${fileId}/complete`, { method: "POST" });
+export async function completeDropFile(
+  dropId: string,
+  fileId: string,
+): Promise<DropFile> {
+  return bffFetch<DropFile>(`/api/drops/${dropId}/files/${fileId}/complete`, {
+    method: "POST",
+  });
 }
 
-export async function uploadDropFile(dropId: string, file: File): Promise<DropFile> {
+export async function uploadDropFile(
+  dropId: string,
+  file: File,
+): Promise<DropFile> {
   const presigned = await presignDropFile(dropId, file);
   await uploadToStorage(file, presigned);
   return completeDropFile(dropId, presigned.file_id);
 }
 
 export function validateDropFiles(files: File[]) {
-  if (files.length > MAX_FILES_PER_DROP) throw new Error("You can attach up to 5 files.");
+  if (files.length > MAX_FILES_PER_DROP)
+    throw new Error("You can attach up to 5 files.");
   for (const file of files) {
     if (file.size === 0) throw new Error(`${file.name} is empty.`);
-    if (file.size > MAX_FILE_SIZE) throw new Error(`${file.name} exceeds the 10 MiB file limit.`);
-    if (file.name.length > 255) throw new Error(`${file.name} has a file name that is too long.`);
+    if (file.size > MAX_FILE_SIZE)
+      throw new Error(`${file.name} exceeds the 10 MiB file limit.`);
+    if (file.name.length > 255)
+      throw new Error(`${file.name} has a file name that is too long.`);
   }
   const totalSize = files.reduce((total, file) => total + file.size, 0);
-  if (totalSize > MAX_DROP_FILE_SIZE) throw new Error("Attachments cannot exceed 20 MiB in total.");
+  if (totalSize > MAX_DROP_FILE_SIZE)
+    throw new Error("Attachments cannot exceed 20 MiB in total.");
 }
 
 export type CreateDropWithFilesInput = {
@@ -147,7 +182,13 @@ export async function createDropWithFiles({
 
   for (let index = 0; index < files.length; index += 1) {
     const file = files[index];
-    onProgress?.({ stage: "uploading", file, fileIndex: index, completedFiles: index, totalFiles: files.length });
+    onProgress?.({
+      stage: "uploading",
+      file,
+      fileIndex: index,
+      completedFiles: index,
+      totalFiles: files.length,
+    });
     try {
       await uploadDropFile(drop.id, file);
     } catch (cause) {
@@ -161,14 +202,21 @@ export async function createDropWithFiles({
     }
   }
 
-  onProgress?.({ stage: "complete", completedFiles: files.length, totalFiles: files.length });
+  onProgress?.({
+    stage: "complete",
+    completedFiles: files.length,
+    totalFiles: files.length,
+  });
   return drop;
 }
 
-export async function getDrops(params: GetDropsParams = {}): Promise<PaginatedDrops> {
+export async function getDrops(
+  params: GetDropsParams = {},
+): Promise<PaginatedDrops> {
   const searchParams = new URLSearchParams();
   if (params.page !== undefined) searchParams.set("page", String(params.page));
-  if (params.page_size !== undefined) searchParams.set("page_size", String(params.page_size));
+  if (params.page_size !== undefined)
+    searchParams.set("page_size", String(params.page_size));
   if (params.search) searchParams.set("search", params.search);
   if (params.status) searchParams.set("status", params.status);
   const query = searchParams.toString();
@@ -184,11 +232,16 @@ export async function getDropFiles(dropId: string): Promise<DropFile[]> {
 }
 
 export async function getDropShareToken(dropId: string): Promise<string> {
-  const response = await bffFetch<{ share_token: string }>(`/api/drops/${dropId}/share-token`);
+  const response = await bffFetch<{ share_token: string }>(
+    `/api/drops/${dropId}/share-token`,
+  );
   return response.share_token;
 }
 
-export async function updateDrop(dropId: string, input: UpdateDropInput): Promise<Drop> {
+export async function updateDrop(
+  dropId: string,
+  input: UpdateDropInput,
+): Promise<Drop> {
   return bffFetch<Drop>(`/api/drops/${dropId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

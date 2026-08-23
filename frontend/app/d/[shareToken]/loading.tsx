@@ -19,9 +19,12 @@ export default function LoadingSharedDrop() {
           />
           <div aria-live="polite">
             <div className="flex items-center gap-2 text-sm font-medium text-primary">
-              <LoaderCircleIcon className="size-4 animate-spin" /> Opening securely
+              <LoaderCircleIcon className="size-4 animate-spin" /> Opening
+              securely
             </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-[-0.035em]">Retrieving your Drop…</h1>
+            <h1 className="mt-4 text-3xl font-semibold tracking-[-0.035em]">
+              Retrieving your Drop…
+            </h1>
             <p className="mt-3 leading-7 text-muted-foreground">
               SafeDrop is checking the link and its availability.
             </p>

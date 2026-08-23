@@ -5,5 +5,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  return proxyAuthenticatedRequest(request, `/drops/${encodeURIComponent(id)}/share-token`);
+  return proxyAuthenticatedRequest(
+    request,
+    `/drops/${encodeURIComponent(id)}/share-token`,
+  );
 }

@@ -29,19 +29,30 @@ export function StorageUsageChart({ usage }: { usage: StorageUsage }) {
             innerRadius={55}
             outerRadius={71}
           >
-            <RadialBar dataKey="value" background={{ fill: "var(--muted)" }} cornerRadius={8} />
+            <RadialBar
+              dataKey="value"
+              background={{ fill: "var(--muted)" }}
+              cornerRadius={8}
+            />
           </RadialBarChart>
         </ChartContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-semibold tracking-tight tabular-nums">{Math.round(percent)}%</span>
+          <span className="text-2xl font-semibold tracking-tight tabular-nums">
+            {Math.round(percent)}%
+          </span>
           <span className="text-xs text-muted-foreground">used</span>
         </div>
       </div>
       <div>
-        <p className="text-xl font-semibold tracking-tight">{formatBytes(usage.used_bytes)} used</p>
-        <p className="mt-1 text-sm text-muted-foreground">of {formatBytes(usage.limit_bytes)} active storage</p>
+        <p className="text-xl font-semibold tracking-tight">
+          {formatBytes(usage.used_bytes)} used
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          of {formatBytes(usage.limit_bytes)} active storage
+        </p>
         <p className="mt-4 text-sm leading-6 text-muted-foreground">
-          {formatBytes(usage.remaining_bytes)} remains for files on active Drops.
+          {formatBytes(usage.remaining_bytes)} remains for files on active
+          Drops.
         </p>
       </div>
     </div>

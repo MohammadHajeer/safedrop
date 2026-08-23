@@ -72,7 +72,9 @@ export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
           type="password"
           autoComplete="current-password"
           aria-invalid={Boolean(errors.password)}
-          aria-describedby={errors.password ? "login-password-error" : undefined}
+          aria-describedby={
+            errors.password ? "login-password-error" : undefined
+          }
           className="h-11 px-3"
           {...register("password")}
         />
@@ -90,7 +92,11 @@ export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
         </Alert>
       ) : null}
 
-      <Button type="submit" className="h-11 w-full rounded-full px-5" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        className="h-11 w-full rounded-full px-5"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? (
           <>
             <LoaderCircleIcon className="animate-spin" />

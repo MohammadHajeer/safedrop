@@ -57,12 +57,17 @@ export function RegisterForm() {
             autoComplete="given-name"
             autoFocus
             aria-invalid={Boolean(errors.first_name)}
-            aria-describedby={errors.first_name ? "register-first-name-error" : undefined}
+            aria-describedby={
+              errors.first_name ? "register-first-name-error" : undefined
+            }
             className="h-11 px-3"
             {...registerField("first_name")}
           />
           {errors.first_name ? (
-            <p id="register-first-name-error" className="text-sm text-destructive">
+            <p
+              id="register-first-name-error"
+              className="text-sm text-destructive"
+            >
               {errors.first_name.message}
             </p>
           ) : null}
@@ -73,12 +78,17 @@ export function RegisterForm() {
             id="register-last-name"
             autoComplete="family-name"
             aria-invalid={Boolean(errors.last_name)}
-            aria-describedby={errors.last_name ? "register-last-name-error" : undefined}
+            aria-describedby={
+              errors.last_name ? "register-last-name-error" : undefined
+            }
             className="h-11 px-3"
             {...registerField("last_name")}
           />
           {errors.last_name ? (
-            <p id="register-last-name-error" className="text-sm text-destructive">
+            <p
+              id="register-last-name-error"
+              className="text-sm text-destructive"
+            >
               {errors.last_name.message}
             </p>
           ) : null}
@@ -116,7 +126,10 @@ export function RegisterForm() {
           className="h-11 px-3"
           {...registerField("password")}
         />
-        <p id="register-password-description" className="text-sm text-muted-foreground">
+        <p
+          id="register-password-description"
+          className="text-sm text-muted-foreground"
+        >
           Use at least 8 characters.
         </p>
         {errors.password ? (
@@ -133,7 +146,11 @@ export function RegisterForm() {
         </Alert>
       ) : null}
 
-      <Button type="submit" className="h-11 w-full rounded-full px-5" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        className="h-11 w-full rounded-full px-5"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? (
           <>
             <LoaderCircleIcon className="animate-spin" />

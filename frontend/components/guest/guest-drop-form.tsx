@@ -153,7 +153,10 @@ export function GuestDropForm() {
 
       setResult(created);
       setShareUrl(
-        new URL(`/d/${encodeURIComponent(created.share_token)}`, window.location.origin).toString(),
+        new URL(
+          `/d/${encodeURIComponent(created.share_token)}`,
+          window.location.origin,
+        ).toString(),
       );
     } catch (caught) {
       setError("root", { message: getApiErrorMessage(caught) });
@@ -196,16 +199,21 @@ export function GuestDropForm() {
         <span className="mx-auto mt-2 flex size-10 items-center justify-center rounded-full bg-primary-soft text-primary">
           <CheckIcon className="size-5" />
         </span>
-        <h2 id="drop-ready-title" className="mt-4 text-2xl font-semibold tracking-[-0.025em]">
+        <h2
+          id="drop-ready-title"
+          className="mt-4 text-2xl font-semibold tracking-[-0.025em]"
+        >
           Your Drop is ready
         </h2>
         <p className="mx-auto mt-2 max-w-lg leading-7 text-muted-foreground">
-          Save or share this link now. It will expire automatically, and this guest
-          Drop will not appear in an account dashboard.
+          Save or share this link now. It will expire automatically, and this
+          guest Drop will not appear in an account dashboard.
         </p>
 
         <div className="mt-7 rounded-xl border bg-muted/45 p-2 text-left">
-          <Label htmlFor="share-link" className="sr-only">Share link</Label>
+          <Label htmlFor="share-link" className="sr-only">
+            Share link
+          </Label>
           <div className="flex flex-col gap-2 sm:flex-row">
             <Input
               id="share-link"
@@ -214,7 +222,11 @@ export function GuestDropForm() {
               onFocus={(event) => event.currentTarget.select()}
               className="h-11 bg-card px-3 font-mono text-xs"
             />
-            <Button type="button" className="h-11 shrink-0 rounded-lg px-4" onClick={copyShareLink}>
+            <Button
+              type="button"
+              className="h-11 shrink-0 rounded-lg px-4"
+              onClick={copyShareLink}
+            >
               <ClipboardIcon /> Copy link
             </Button>
           </div>
@@ -241,7 +253,8 @@ export function GuestDropForm() {
           </Button>
         </div>
         <p className="mt-5 text-xs leading-5 text-muted-foreground">
-          Opening the recipient view counts as one of this Drop&apos;s allowed views.
+          Opening the recipient view counts as one of this Drop&apos;s allowed
+          views.
         </p>
       </section>
     );
@@ -252,7 +265,9 @@ export function GuestDropForm() {
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-4">
           <Label htmlFor="drop-title">Title</Label>
-          <span className="text-xs text-muted-foreground">3–100 characters</span>
+          <span className="text-xs text-muted-foreground">
+            3–100 characters
+          </span>
         </div>
         <Input
           id="drop-title"
@@ -264,14 +279,18 @@ export function GuestDropForm() {
           {...register("title")}
         />
         {errors.title ? (
-          <p id="drop-title-error" className="text-sm text-destructive">{errors.title.message}</p>
+          <p id="drop-title-error" className="text-sm text-destructive">
+            {errors.title.message}
+          </p>
         ) : null}
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between gap-4">
           <Label htmlFor="drop-content">Message</Label>
-          <span className="text-xs text-muted-foreground">Up to 10,000 characters</span>
+          <span className="text-xs text-muted-foreground">
+            Up to 10,000 characters
+          </span>
         </div>
         <Textarea
           id="drop-content"
@@ -283,19 +302,27 @@ export function GuestDropForm() {
           {...register("content")}
         />
         {errors.content ? (
-          <p id="drop-content-error" className="text-sm text-destructive">{errors.content.message}</p>
+          <p id="drop-content-error" className="text-sm text-destructive">
+            {errors.content.message}
+          </p>
         ) : null}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label id="expiration-label" htmlFor="drop-expiration">Expires after</Label>
+          <Label id="expiration-label" htmlFor="drop-expiration">
+            Expires after
+          </Label>
           <Controller
             control={control}
             name="expiration"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="drop-expiration" aria-labelledby="expiration-label" className="h-11 w-full px-3">
+                <SelectTrigger
+                  id="drop-expiration"
+                  aria-labelledby="expiration-label"
+                  className="h-11 w-full px-3"
+                >
                   <SelectValue>{(value) => `${value} minutes`}</SelectValue>
                 </SelectTrigger>
                 <SelectContent align="start">
@@ -308,14 +335,22 @@ export function GuestDropForm() {
           />
         </div>
         <div className="space-y-2">
-          <Label id="views-label" htmlFor="drop-views">View limit</Label>
+          <Label id="views-label" htmlFor="drop-views">
+            View limit
+          </Label>
           <Controller
             control={control}
             name="max_views"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="drop-views" aria-labelledby="views-label" className="h-11 w-full px-3">
-                  <SelectValue>{(value) => `${value} ${value === "1" ? "view" : "views"}`}</SelectValue>
+                <SelectTrigger
+                  id="drop-views"
+                  aria-labelledby="views-label"
+                  className="h-11 w-full px-3"
+                >
+                  <SelectValue>
+                    {(value) => `${value} ${value === "1" ? "view" : "views"}`}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent align="start">
                   <SelectItem value="1">1 view</SelectItem>
@@ -332,8 +367,15 @@ export function GuestDropForm() {
 
       <div className="space-y-3">
         <div>
-          <Label htmlFor="drop-file">Attachment <span className="font-normal text-muted-foreground">(optional)</span></Label>
-          <p className="mt-1 text-sm text-muted-foreground">One file, up to 5 MiB.</p>
+          <Label htmlFor="drop-file">
+            Attachment{" "}
+            <span className="font-normal text-muted-foreground">
+              (optional)
+            </span>
+          </Label>
+          <p className="mt-1 text-sm text-muted-foreground">
+            One file, up to 5 MiB.
+          </p>
         </div>
 
         {file ? (
@@ -343,7 +385,9 @@ export function GuestDropForm() {
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium">{file.name}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {formatFileSize(file.size)}
+              </p>
             </div>
             <Button
               type="button"
@@ -367,7 +411,9 @@ export function GuestDropForm() {
             onDrop={handleDrop}
             className={cn(
               "rounded-xl border border-dashed p-5 text-center transition-colors sm:p-7",
-              isDragging ? "border-primary bg-primary-soft/55" : "bg-muted/25 hover:bg-muted/45",
+              isDragging
+                ? "border-primary bg-primary-soft/55"
+                : "bg-muted/25 hover:bg-muted/45",
               fileError && "border-destructive/60",
             )}
           >
@@ -378,22 +424,36 @@ export function GuestDropForm() {
               className="sr-only"
               aria-invalid={Boolean(fileError)}
               aria-describedby="drop-file-help drop-file-error"
-              onChange={(event) => chooseFile(event.target.files?.item(0) ?? undefined)}
+              onChange={(event) =>
+                chooseFile(event.target.files?.item(0) ?? undefined)
+              }
             />
             <span className="mx-auto flex size-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
               <UploadCloudIcon className="size-5" />
             </span>
             <p className="mt-3 text-sm font-medium">Drop a file here</p>
-            <p id="drop-file-help" className="mt-1 text-sm text-muted-foreground">
+            <p
+              id="drop-file-help"
+              className="mt-1 text-sm text-muted-foreground"
+            >
               or{" "}
-              <Label htmlFor="drop-file" className="inline cursor-pointer font-medium text-primary hover:underline">
+              <Label
+                htmlFor="drop-file"
+                className="inline cursor-pointer font-medium text-primary hover:underline"
+              >
                 browse your device
               </Label>
             </p>
           </div>
         )}
         {fileError ? (
-          <p id="drop-file-error" role="alert" className="text-sm text-destructive">{fileError}</p>
+          <p
+            id="drop-file-error"
+            role="alert"
+            className="text-sm text-destructive"
+          >
+            {fileError}
+          </p>
         ) : null}
       </div>
 
@@ -406,7 +466,9 @@ export function GuestDropForm() {
 
       {isSubmitting ? (
         <Progress value={file ? 68 : 48} aria-label="Creating Drop">
-          <ProgressLabel>{file ? "Creating and uploading…" : "Creating secure link…"}</ProgressLabel>
+          <ProgressLabel>
+            {file ? "Creating and uploading…" : "Creating secure link…"}
+          </ProgressLabel>
           <span className="ml-auto text-sm text-muted-foreground">
             {file ? "Uploading directly" : "Please wait"}
           </span>

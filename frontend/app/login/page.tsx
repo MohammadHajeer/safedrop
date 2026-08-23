@@ -28,13 +28,19 @@ export default async function LoginPage({
         <LoginForm nextPath={nextPath} />
         <p className="mt-6 text-center text-sm text-muted-foreground">
           New to SafeDrop?{" "}
-          <Link className="font-medium text-primary hover:underline" href="/register">
+          <Link
+            className="font-medium text-primary hover:underline"
+            href="/register"
+          >
             Create an account
           </Link>
         </p>
         <p className="mt-3 text-center text-sm text-muted-foreground">
           Just sharing once?{" "}
-          <Link className="font-medium text-foreground hover:underline" href="/create">
+          <Link
+            className="font-medium text-foreground hover:underline"
+            href="/create"
+          >
             Create a guest Drop
           </Link>
         </p>

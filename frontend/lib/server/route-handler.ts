@@ -18,9 +18,7 @@ export async function nextResponseFromBackend(
   backendResponse: Response,
 ): Promise<NextResponse> {
   const body =
-    backendResponse.status === 204
-      ? null
-      : await backendResponse.arrayBuffer();
+    backendResponse.status === 204 ? null : await backendResponse.arrayBuffer();
   const headers = new Headers();
   const contentType = backendResponse.headers.get("content-type");
 
@@ -45,11 +43,17 @@ export function rejectCrossOriginMutation(
   const origin = request.headers.get("origin");
 
   if (fetchSite === "cross-site") {
-    return NextResponse.json({ detail: "Cross-origin request blocked" }, { status: 403 });
+    return NextResponse.json(
+      { detail: "Cross-origin request blocked" },
+      { status: 403 },
+    );
   }
 
   if (origin && origin !== new URL(request.url).origin) {
-    return NextResponse.json({ detail: "Cross-origin request blocked" }, { status: 403 });
+    return NextResponse.json(
+      { detail: "Cross-origin request blocked" },
+      { status: 403 },
+    );
   }
 
   return null;

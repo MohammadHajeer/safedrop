@@ -56,11 +56,16 @@ function UnavailableDrop({ serviceError = false }: { serviceError?: boolean }) {
             className="mx-auto h-auto w-full max-w-sm"
           />
           <div>
-            <Badge variant="secondary" className="rounded-full px-3 py-1.5 text-primary">
+            <Badge
+              variant="secondary"
+              className="rounded-full px-3 py-1.5 text-primary"
+            >
               Private by design
             </Badge>
             <h1 className="mt-5 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
-              {serviceError ? "This Drop cannot be opened right now" : "This Drop is no longer available"}
+              {serviceError
+                ? "This Drop cannot be opened right now"
+                : "This Drop is no longer available"}
             </h1>
             <p className="mt-4 leading-7 text-muted-foreground">
               {serviceError
@@ -71,7 +76,8 @@ function UnavailableDrop({ serviceError = false }: { serviceError?: boolean }) {
               <ShieldCheckIcon />
               <AlertTitle>No private details were revealed</AlertTitle>
               <AlertDescription>
-                SafeDrop uses the same unavailable response for private and invalid links.
+                SafeDrop uses the same unavailable response for private and
+                invalid links.
               </AlertDescription>
             </Alert>
             <ButtonLink href="/create" className="mt-7 h-11 rounded-full px-5">
@@ -92,7 +98,10 @@ function ReceivedDrop({ drop }: { drop: SharedDrop }) {
         <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,var(--primary-soft),transparent_68%)] opacity-70" />
         <div className="relative mx-auto grid w-full max-w-6xl items-start gap-10 lg:grid-cols-[0.68fr_1fr] lg:gap-14">
           <aside className="lg:sticky lg:top-28">
-            <Badge variant="secondary" className="rounded-full px-3 py-1.5 text-primary">
+            <Badge
+              variant="secondary"
+              className="rounded-full px-3 py-1.5 text-primary"
+            >
               <ShieldCheckIcon /> Opened securely
             </Badge>
             <h1 className="mt-5 text-4xl font-semibold tracking-[-0.045em] text-balance sm:text-5xl">
@@ -106,7 +115,10 @@ function ReceivedDrop({ drop }: { drop: SharedDrop }) {
               <CalendarClockIcon className="mt-0.5 size-4 shrink-0 text-primary" />
               <div>
                 <p className="font-medium">Available until</p>
-                <time dateTime={drop.expires_at} className="mt-1 block text-muted-foreground">
+                <time
+                  dateTime={drop.expires_at}
+                  className="mt-1 block text-muted-foreground"
+                >
                   {formatExpiration(drop.expires_at)}
                 </time>
               </div>
@@ -124,7 +136,9 @@ function ReceivedDrop({ drop }: { drop: SharedDrop }) {
 
           <article className="rounded-2xl border bg-card p-5 shadow-[0_18px_50px_-36px_rgba(14,21,20,0.45)] sm:p-8">
             <header>
-              <p className="text-sm font-medium text-primary">Shared with you</p>
+              <p className="text-sm font-medium text-primary">
+                Shared with you
+              </p>
               <h2 className="mt-2 text-2xl font-semibold tracking-[-0.025em] text-pretty sm:text-3xl">
                 {drop.title}
               </h2>
@@ -133,33 +147,53 @@ function ReceivedDrop({ drop }: { drop: SharedDrop }) {
             <Separator className="my-7" />
 
             <section aria-labelledby="message-heading">
-              <h3 id="message-heading" className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+              <h3
+                id="message-heading"
+                className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+              >
                 Message
               </h3>
               <div className="mt-3 overflow-hidden rounded-xl border bg-muted/25 p-4 sm:p-5">
-                <p className="wrap-break-word whitespace-pre-wrap leading-7">{drop.content}</p>
+                <p className="wrap-break-word whitespace-pre-wrap leading-7">
+                  {drop.content}
+                </p>
               </div>
             </section>
 
             {drop.files.length > 0 ? (
               <section aria-labelledby="attachments-heading" className="mt-8">
                 <div className="flex items-center justify-between gap-4">
-                  <h3 id="attachments-heading" className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+                  <h3
+                    id="attachments-heading"
+                    className="text-sm font-semibold tracking-wide text-muted-foreground uppercase"
+                  >
                     {drop.files.length === 1 ? "Attachment" : "Attachments"}
                   </h3>
-                  <span className="text-xs text-muted-foreground">Temporary download link</span>
+                  <span className="text-xs text-muted-foreground">
+                    Temporary download link
+                  </span>
                 </div>
                 <div className="mt-3 space-y-3">
                   {drop.files.map((file) => (
-                    <Card key={file.id} size="sm" className="gap-0 py-0 shadow-none ring-border">
+                    <Card
+                      key={file.id}
+                      size="sm"
+                      className="gap-0 py-0 shadow-none ring-border"
+                    >
                       <CardContent className="flex items-center gap-3 p-3 sm:p-4">
                         <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
                           <FileIcon className="size-5" />
                         </span>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate font-medium" title={file.original_name}>{file.original_name}</p>
+                          <p
+                            className="truncate font-medium"
+                            title={file.original_name}
+                          >
+                            {file.original_name}
+                          </p>
                           <p className="mt-1 truncate text-xs text-muted-foreground">
-                            {file.content_type || "File"} · {formatBytes(file.size_bytes)}
+                            {file.content_type || "File"} ·{" "}
+                            {formatBytes(file.size_bytes)}
                           </p>
                         </div>
                         <ButtonAnchor
@@ -176,14 +210,17 @@ function ReceivedDrop({ drop }: { drop: SharedDrop }) {
                 </div>
               </section>
             ) : (
-              <p className="mt-7 text-sm text-muted-foreground">This Drop does not include an attachment.</p>
+              <p className="mt-7 text-sm text-muted-foreground">
+                This Drop does not include an attachment.
+              </p>
             )}
 
             <Alert className="mt-8 border-primary/15 bg-primary-soft/35">
               <ShieldCheckIcon />
               <AlertTitle>Keep what you need</AlertTitle>
               <AlertDescription>
-                This page visit has used one of the sender&apos;s allowed views. Avoid refreshing unless necessary.
+                This page visit has used one of the sender&apos;s allowed views.
+                Avoid refreshing unless necessary.
               </AlertDescription>
             </Alert>
           </article>
