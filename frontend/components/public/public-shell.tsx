@@ -4,8 +4,12 @@ import { ArrowRightIcon } from "lucide-react";
 import { SafeDropLogo } from "@/components/public/safedrop-logo";
 import { ThemeToggle } from "@/components/public/theme-toggle";
 import { ButtonLink } from "@/components/ui/button-link";
+import { getCurrentUser } from "@/lib/server/auth";
 
-export function PublicShell({ children }: { children: React.ReactNode }) {
+export async function PublicShell({ children }: { children: React.ReactNode }) {
+  const user = await getCurrentUser();
+  const createHref = user ? "/dashboard/drops/new" : "/create";
+
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-40 border-b bg-background/92 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
@@ -26,15 +30,25 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
 
           <div className="ml-auto flex items-center gap-1 md:ml-2 sm:gap-2">
             <ThemeToggle />
+            {user ? (
+              <ButtonLink
+                variant="ghost"
+                href="/dashboard"
+                className="hidden h-10 px-2 min-[360px]:inline-flex sm:px-3"
+              >
+                Dashboard
+              </ButtonLink>
+            ) : (
+              <ButtonLink
+                variant="ghost"
+                href="/login"
+                className="hidden h-10 px-2 min-[360px]:inline-flex sm:px-3"
+              >
+                Sign in
+              </ButtonLink>
+            )}
             <ButtonLink
-              variant="ghost"
-              href="/login"
-              className="hidden h-10 px-2 min-[360px]:inline-flex sm:px-3"
-            >
-              Sign in
-            </ButtonLink>
-            <ButtonLink
-              href="/create"
+              href={createHref}
               className="h-10 rounded-full px-4 shadow-sm sm:px-5"
             >
               <span className="sm:hidden">Create</span>
@@ -58,24 +72,49 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             aria-label="Footer navigation"
             className="flex items-center gap-5"
           >
-            <Link
-              className="transition-colors hover:text-foreground"
-              href="/create"
-            >
-              Create a Drop
-            </Link>
-            <Link
-              className="transition-colors hover:text-foreground"
-              href="/login"
-            >
-              Sign in
-            </Link>
-            <Link
-              className="transition-colors hover:text-foreground"
-              href="/register"
-            >
-              Register
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/dashboard"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/dashboard/drops/new"
+                >
+                  Create a Drop
+                </Link>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/profile"
+                >
+                  Profile
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/create"
+                >
+                  Create a Drop
+                </Link>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/login"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  className="transition-colors hover:text-foreground"
+                  href="/register"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </footer>

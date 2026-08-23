@@ -174,6 +174,7 @@ export function AdminUserFormDialog({
               type="email"
               inputMode="email"
               autoComplete="email"
+              placeholder="you@example.com"
               aria-invalid={Boolean(errors.email)}
               className="h-10"
               {...register("email")}

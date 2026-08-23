@@ -61,6 +61,7 @@ export function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const returnTo = safeReturnTo(request.nextUrl.searchParams.get("returnTo"));
+  const optional = request.nextUrl.searchParams.get("optional") === "1";
   const refreshResponse = await refresh(request);
 
   if (refreshResponse.status >= 500) {
@@ -68,6 +69,12 @@ export async function GET(request: NextRequest) {
   }
 
   if (!refreshResponse.ok) {
+    if (optional) {
+      const response = NextResponse.redirect(new URL(returnTo, request.url));
+      clearAuthCookies(response);
+      return response;
+    }
+
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", returnTo);
     const response = NextResponse.redirect(loginUrl);

@@ -56,6 +56,7 @@ export function RegisterForm() {
             id="register-first-name"
             autoComplete="given-name"
             autoFocus
+            placeholder="Enter your first name"
             aria-invalid={Boolean(errors.first_name)}
             aria-describedby={
               errors.first_name ? "register-first-name-error" : undefined
@@ -77,6 +78,7 @@ export function RegisterForm() {
           <Input
             id="register-last-name"
             autoComplete="family-name"
+            placeholder="Enter your last name"
             aria-invalid={Boolean(errors.last_name)}
             aria-describedby={
               errors.last_name ? "register-last-name-error" : undefined
@@ -121,6 +123,7 @@ export function RegisterForm() {
           id="register-password"
           type="password"
           autoComplete="new-password"
+          placeholder="Enter your password"
           aria-invalid={Boolean(errors.password)}
           aria-describedby="register-password-description register-password-error"
           className="h-11 px-3"

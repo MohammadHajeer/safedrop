@@ -71,6 +71,7 @@ export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
           id="login-password"
           type="password"
           autoComplete="current-password"
+          placeholder="Enter your password"
           aria-invalid={Boolean(errors.password)}
           aria-describedby={
             errors.password ? "login-password-error" : undefined

@@ -136,6 +136,7 @@ function EditDropDialog({ drop }: { drop: Drop }) {
             <Label htmlFor="edit-title">Title</Label>
             <Input
               id="edit-title"
+              placeholder="What are you sharing?"
               className="h-10"
               aria-invalid={Boolean(errors.title)}
               {...register("title")}
@@ -148,6 +149,7 @@ function EditDropDialog({ drop }: { drop: Drop }) {
             <Label htmlFor="edit-content">Message</Label>
             <Textarea
               id="edit-content"
+              placeholder="Add the text your recipient should receive…"
               rows={7}
               className="min-h-36"
               aria-invalid={Boolean(errors.content)}

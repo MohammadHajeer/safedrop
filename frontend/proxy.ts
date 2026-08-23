@@ -15,6 +15,12 @@ function loginRedirect(request: NextRequest): NextResponse {
   return NextResponse.redirect(loginUrl);
 }
 
+function isProtectedPath(pathname: string): boolean {
+  return ["/dashboard", "/profile", "/admin"].some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
+
 export function proxy(request: NextRequest) {
   if (request.method !== "GET" && request.method !== "HEAD") {
     return NextResponse.next();
@@ -22,6 +28,7 @@ export function proxy(request: NextRequest) {
 
   const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
   const refreshToken = request.cookies.get(REFRESH_TOKEN_COOKIE)?.value;
+  const protectedPath = isProtectedPath(request.nextUrl.pathname);
 
   if (accessToken && !accessTokenNeedsRefresh(accessToken)) {
     return NextResponse.next();
@@ -33,15 +40,20 @@ export function proxy(request: NextRequest) {
       "returnTo",
       `${request.nextUrl.pathname}${request.nextUrl.search}`,
     );
+    if (!protectedPath) {
+      refreshUrl.searchParams.set("optional", "1");
+    }
     return NextResponse.redirect(refreshUrl);
   }
 
-  const response = loginRedirect(request);
+  const response = protectedPath ? loginRedirect(request) : NextResponse.next();
   response.cookies.delete(ACCESS_TOKEN_COOKIE);
   response.cookies.delete(REFRESH_TOKEN_COOKIE);
   return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*", "/admin/:path*"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|branding|illustrations).*)",
+  ],
 };

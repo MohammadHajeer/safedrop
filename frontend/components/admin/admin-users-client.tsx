@@ -207,7 +207,7 @@ export function AdminUsersClient() {
               key={search}
               name="search"
               defaultValue={search}
-              placeholder="Search name or email"
+              placeholder="Search by name or email…"
               aria-label="Search users"
               className="h-10 pl-9"
               maxLength={100}
