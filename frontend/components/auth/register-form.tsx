@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRightIcon, LoaderCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -10,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authKeys } from "@/hooks/use-auth";
 import { register } from "@/lib/api/auth";
 import { getApiErrorMessage } from "@/lib/api/errors";
 
@@ -27,6 +29,7 @@ type RegisterValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const {
     register: registerField,
     handleSubmit,
@@ -39,7 +42,8 @@ export function RegisterForm() {
 
   async function onSubmit(values: RegisterValues) {
     try {
-      await register(values);
+      const response = await register(values);
+      queryClient.setQueryData(authKeys.me, response.user);
       router.replace("/dashboard");
       router.refresh();
     } catch (caught) {

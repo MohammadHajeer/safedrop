@@ -1,8 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowRightIcon, LoaderCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -10,6 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authKeys } from "@/hooks/use-auth";
 import { login } from "@/lib/api/auth";
 import { getApiErrorMessage } from "@/lib/api/errors";
 
@@ -20,8 +23,15 @@ const loginSchema = z.object({
 
 type LoginValues = z.infer<typeof loginSchema>;
 
-export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
+export function LoginForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const requestedPath = searchParams.get("next");
+  const nextPath =
+    requestedPath?.startsWith("/") && !requestedPath.startsWith("//")
+      ? requestedPath
+      : "/dashboard";
   const {
     register,
     handleSubmit,
@@ -34,7 +44,8 @@ export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
 
   async function onSubmit(values: LoginValues) {
     try {
-      await login(values);
+      const response = await login(values);
+      queryClient.setQueryData(authKeys.me, response.user);
       router.replace(nextPath);
       router.refresh();
     } catch (caught) {

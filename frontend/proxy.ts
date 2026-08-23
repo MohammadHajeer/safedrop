@@ -4,6 +4,7 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
   accessTokenNeedsRefresh,
+  readJwtUserType,
 } from "@/lib/auth-cookies";
 
 function loginRedirect(request: NextRequest): NextResponse {
@@ -21,6 +22,22 @@ function isProtectedPath(pathname: string): boolean {
   );
 }
 
+function guestOnlyDestination(pathname: string): string | undefined {
+  if (pathname === "/create") {
+    return "/dashboard/drops/new";
+  }
+
+  if (pathname === "/login" || pathname === "/register") {
+    return "/dashboard";
+  }
+
+  return undefined;
+}
+
+function isAdminPath(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
 export function proxy(request: NextRequest) {
   if (request.method !== "GET" && request.method !== "HEAD") {
     return NextResponse.next();
@@ -31,6 +48,19 @@ export function proxy(request: NextRequest) {
   const protectedPath = isProtectedPath(request.nextUrl.pathname);
 
   if (accessToken && !accessTokenNeedsRefresh(accessToken)) {
+    const guestDestination = guestOnlyDestination(request.nextUrl.pathname);
+
+    if (guestDestination) {
+      return NextResponse.redirect(new URL(guestDestination, request.url));
+    }
+
+    if (
+      isAdminPath(request.nextUrl.pathname) &&
+      readJwtUserType(accessToken) !== "admin"
+    ) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
     return NextResponse.next();
   }
 
@@ -47,13 +77,25 @@ export function proxy(request: NextRequest) {
   }
 
   const response = protectedPath ? loginRedirect(request) : NextResponse.next();
-  response.cookies.delete(ACCESS_TOKEN_COOKIE);
-  response.cookies.delete(REFRESH_TOKEN_COOKIE);
+
+  if (accessToken) {
+    response.cookies.delete(ACCESS_TOKEN_COOKIE);
+  }
+
+  if (refreshToken) {
+    response.cookies.delete(REFRESH_TOKEN_COOKIE);
+  }
+
   return response;
 }
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|branding|illustrations).*)",
+    "/login",
+    "/register",
+    "/create",
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/admin/:path*",
   ],
 };

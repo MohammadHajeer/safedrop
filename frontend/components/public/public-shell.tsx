@@ -1,16 +1,15 @@
 import Link from "next/link";
-import { ArrowRightIcon, LayoutDashboardIcon } from "lucide-react";
 
+import {
+  AuthAwareCreateLink,
+  AuthAwareFooterNavigation,
+  AuthAwareHeaderActions,
+} from "@/components/public/auth-aware-public";
 import { SafeDropLogo } from "@/components/public/safedrop-logo";
 import { ThemeToggle } from "@/components/public/theme-toggle";
 import { ButtonLink } from "@/components/ui/button-link";
-import { getCurrentUser } from "@/lib/server/auth";
 
-export async function PublicShell({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser();
-
-  const createHref = user ? "/dashboard/drops/new" : "/create";
-
+export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col">
       {/* HEADER */}
@@ -41,34 +40,7 @@ export async function PublicShell({ children }: { children: React.ReactNode }) {
 
           <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
             <ThemeToggle />
-
-            {user ? (
-              <ButtonLink
-                variant="ghost"
-                href="/dashboard"
-                className="hidden h-10 px-3 min-[390px]:inline-flex"
-              >
-                <LayoutDashboardIcon />
-                <span className="hidden sm:inline">Dashboard</span>
-              </ButtonLink>
-            ) : (
-              <ButtonLink
-                variant="ghost"
-                href="/login"
-                className="hidden h-10 px-3 min-[390px]:inline-flex"
-              >
-                Sign in
-              </ButtonLink>
-            )}
-
-            <ButtonLink
-              href={createHref}
-              className="h-10 rounded-full px-4 shadow-sm sm:px-5"
-            >
-              <span className="sm:hidden">Create</span>
-              <span className="hidden sm:inline">Create a Drop</span>
-              <ArrowRightIcon data-icon="inline-end" />
-            </ButtonLink>
+            <AuthAwareHeaderActions />
           </div>
         </div>
       </header>
@@ -111,74 +83,12 @@ export async function PublicShell({ children }: { children: React.ReactNode }) {
                   Privacy
                 </Link>
 
-                <Link
-                  href={createHref}
-                  className="transition-colors hover:text-foreground"
-                >
-                  Create a Drop
-                </Link>
+                <AuthAwareCreateLink />
               </nav>
             </div>
 
             {/* ACCOUNT */}
-            <div>
-              <p className="text-sm font-semibold">
-                {user ? "Account" : "Get started"}
-              </p>
-
-              <nav
-                aria-label="Account navigation"
-                className="mt-4 flex flex-col items-start gap-3 text-sm text-muted-foreground"
-              >
-                {user ? (
-                  <>
-                    <Link
-                      href="/dashboard"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      Dashboard
-                    </Link>
-
-                    <Link
-                      href="/dashboard/drops"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      My Drops
-                    </Link>
-
-                    <Link
-                      href="/profile"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      Profile
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      Sign in
-                    </Link>
-
-                    <Link
-                      href="/register"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      Create account
-                    </Link>
-
-                    <Link
-                      href="/create"
-                      className="transition-colors hover:text-foreground"
-                    >
-                      Continue as guest
-                    </Link>
-                  </>
-                )}
-              </nav>
-            </div>
+            <AuthAwareFooterNavigation />
           </div>
 
           <div className="mt-10 flex flex-col gap-3 border-t pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">

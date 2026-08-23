@@ -1,28 +1,13 @@
 import type { Metadata } from "next";
 import { PlusIcon } from "lucide-react";
+import { Suspense } from "react";
 
-import { DropsList } from "@/components/drops/drops-list";
+import { DropsList, DropsListSkeleton } from "@/components/drops/drops-list";
 import { ButtonLink } from "@/components/ui/button-link";
-import type { DropStatus } from "@/lib/api/drops";
 
 export const metadata: Metadata = { title: "My Drops" };
 
-const statuses: DropStatus[] = ["active", "expired", "consumed", "revoked"];
-
-export default async function DropsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string; search?: string; status?: string }>;
-}) {
-  const query = await searchParams;
-  const parsedPage = Number.parseInt(query.page ?? "1", 10);
-  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
-  const status = statuses.includes(query.status as DropStatus)
-    ? (query.status as DropStatus)
-    : "active";
-  const search = query.search?.trim().slice(0, 100) || undefined;
-  const params = { page, page_size: 10, status, search };
-
+export default function DropsPage() {
   return (
     <div className="space-y-7">
       <header className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
@@ -45,7 +30,9 @@ export default async function DropsPage({
           <PlusIcon /> Create Drop
         </ButtonLink>
       </header>
-      <DropsList params={params} />
+      <Suspense fallback={<DropsListSkeleton />}>
+        <DropsList />
+      </Suspense>
     </div>
   );
 }

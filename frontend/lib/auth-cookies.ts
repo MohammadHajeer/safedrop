@@ -8,7 +8,12 @@ export const authCookieOptions = {
   path: "/",
 };
 
-export function readJwtExpiration(token: string): Date | undefined {
+type JwtClaims = {
+  exp?: unknown;
+  type?: unknown;
+};
+
+function readJwtClaims(token: string): JwtClaims | undefined {
   try {
     const payloadPart = token.split(".")[1];
 
@@ -21,14 +26,24 @@ export function readJwtExpiration(token: string): Date | undefined {
       normalized.length + ((4 - (normalized.length % 4)) % 4),
       "=",
     );
-    const payload = JSON.parse(atob(padded)) as { exp?: unknown };
-
-    return typeof payload.exp === "number"
-      ? new Date(payload.exp * 1000)
-      : undefined;
+    return JSON.parse(atob(padded)) as JwtClaims;
   } catch {
     return undefined;
   }
+}
+
+export function readJwtExpiration(token: string): Date | undefined {
+  const expiration = readJwtClaims(token)?.exp;
+
+  return typeof expiration === "number"
+    ? new Date(expiration * 1000)
+    : undefined;
+}
+
+export function readJwtUserType(token: string): "admin" | "client" | undefined {
+  const userType = readJwtClaims(token)?.type;
+
+  return userType === "admin" || userType === "client" ? userType : undefined;
 }
 
 export function accessTokenNeedsRefresh(token: string): boolean {

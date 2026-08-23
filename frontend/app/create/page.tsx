@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { redirect } from "next/navigation";
 import {
   Clock3Icon,
   EyeIcon,
@@ -12,7 +11,6 @@ import {
 import { GuestDropForm } from "@/components/guest/guest-drop-form";
 import { PublicShell } from "@/components/public/public-shell";
 import { Badge } from "@/components/ui/badge";
-import { getCurrentUser } from "@/lib/server/auth";
 
 export const metadata: Metadata = {
   title: "Create a guest Drop",
@@ -37,13 +35,7 @@ const guestLimits = [
   },
 ];
 
-export default async function CreateGuestDropPage() {
-  const user = await getCurrentUser();
-
-  if (user) {
-    redirect("/dashboard/drops/new");
-  }
-
+export default function CreateGuestDropPage() {
   return (
     <PublicShell>
       <main className="relative flex-1 overflow-hidden">

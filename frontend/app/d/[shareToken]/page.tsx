@@ -8,15 +8,15 @@ import {
   ShieldCheckIcon,
 } from "lucide-react";
 
+import { AuthAwareButtonLink } from "@/components/public/auth-aware-public";
 import { PublicShell } from "@/components/public/public-shell";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { ButtonAnchor, ButtonLink } from "@/components/ui/button-link";
+import { ButtonAnchor } from "@/components/ui/button-link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ApiError } from "@/lib/api/errors";
 import { getSharedDrop, type SharedDrop } from "@/lib/api/share";
-import { getCurrentUser } from "@/lib/server/auth";
 
 export const metadata: Metadata = {
   title: "Received Drop",
@@ -42,14 +42,7 @@ function formatExpiration(value: string) {
   }).format(date);
 }
 
-async function UnavailableDrop({
-  serviceError = false,
-}: {
-  serviceError?: boolean;
-}) {
-  const user = await getCurrentUser();
-  const createHref = user ? "/dashboard/drops/new" : "/create";
-
+function UnavailableDrop({ serviceError = false }: { serviceError?: boolean }) {
   return (
     <PublicShell>
       <main className="relative flex flex-1 overflow-hidden">
@@ -104,14 +97,15 @@ async function UnavailableDrop({
               </AlertDescription>
             </Alert>
 
-            <ButtonLink
-              href={createHref}
+            <AuthAwareButtonLink
+              guestHref="/create"
+              authenticatedHref="/dashboard/drops/new"
               size="lg"
               className="mt-8 h-12 rounded-full px-6"
             >
               Create your own Drop
               <ArrowRightIcon data-icon="inline-end" />
-            </ButtonLink>
+            </AuthAwareButtonLink>
           </section>
         </div>
       </main>

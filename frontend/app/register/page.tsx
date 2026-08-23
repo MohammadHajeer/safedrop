@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import { RegisterForm } from "@/components/auth/register-form";
 import { AuthLayout } from "@/components/public/auth-layout";
 import { PublicShell } from "@/components/public/public-shell";
-import { getCurrentUser } from "@/lib/server/auth";
 
 export const metadata: Metadata = {
   title: "Create an account",
@@ -13,13 +11,7 @@ export const metadata: Metadata = {
     "Create a SafeDrop account to manage larger and longer-lived temporary shares.",
 };
 
-export default async function RegisterPage() {
-  const user = await getCurrentUser();
-
-  if (user) {
-    redirect("/dashboard");
-  }
-
+export default function RegisterPage() {
   return (
     <PublicShell>
       <AuthLayout

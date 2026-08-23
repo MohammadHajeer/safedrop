@@ -6,6 +6,7 @@ import type {
 } from "@/lib/auth-types";
 
 import { bffFetch } from "./bff";
+import { ApiError } from "./errors";
 
 export type { LoginInput, RegisterInput, User } from "@/lib/auth-types";
 
@@ -29,8 +30,16 @@ export function login(input: LoginInput): Promise<SafeAuthResponse> {
   });
 }
 
-export async function getMe(): Promise<User> {
-  return bffFetch<User>("/api/auth/me");
+export async function getMe(): Promise<User | null> {
+  try {
+    return await bffFetch<User>("/api/auth/me");
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) {
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 export async function logout(): Promise<void> {

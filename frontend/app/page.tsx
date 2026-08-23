@@ -15,9 +15,9 @@ import {
   ZapIcon,
 } from "lucide-react";
 
+import { AuthAwareButtonLink } from "@/components/public/auth-aware-public";
 import { PublicShell } from "@/components/public/public-shell";
 import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button-link";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
@@ -94,23 +94,26 @@ export default function Home() {
               </p>
 
               <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                <ButtonLink
-                  href="/create"
+                <AuthAwareButtonLink
+                  guestHref="/create"
+                  authenticatedHref="/dashboard/drops/new"
                   size="lg"
                   className="h-12 rounded-full px-7 text-base shadow-sm"
                 >
                   Create a Drop
                   <ArrowRightIcon data-icon="inline-end" />
-                </ButtonLink>
+                </AuthAwareButtonLink>
 
-                <ButtonLink
-                  href="/register"
+                <AuthAwareButtonLink
+                  guestHref="/register"
+                  authenticatedHref="/dashboard"
+                  authenticatedChildren="Dashboard"
                   size="lg"
                   variant="outline"
                   className="h-12 rounded-full bg-background/70 px-7 text-base backdrop-blur-sm"
                 >
                   Create an account
-                </ButtonLink>
+                </AuthAwareButtonLink>
               </div>
 
               <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-sm text-muted-foreground">
@@ -387,13 +390,20 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <ButtonLink
-                    href="/create"
+                  <AuthAwareButtonLink
+                    guestHref="/create"
+                    authenticatedHref="/dashboard/drops/new"
+                    authenticatedChildren={
+                      <>
+                        Create a Drop
+                        <ArrowRightIcon data-icon="inline-end" />
+                      </>
+                    }
                     className="mt-9 h-11 rounded-full px-5"
                   >
                     Create as guest
                     <ArrowRightIcon data-icon="inline-end" />
-                  </ButtonLink>
+                  </AuthAwareButtonLink>
                 </CardContent>
               </Card>
 
@@ -433,13 +443,20 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <ButtonLink
-                    href="/register"
+                  <AuthAwareButtonLink
+                    guestHref="/register"
+                    authenticatedHref="/dashboard"
+                    authenticatedChildren={
+                      <>
+                        Dashboard
+                        <ArrowRightIcon data-icon="inline-end" />
+                      </>
+                    }
                     className="mt-9 h-11 rounded-full px-5"
                   >
                     Create an account
                     <ArrowRightIcon data-icon="inline-end" />
-                  </ButtonLink>
+                  </AuthAwareButtonLink>
                 </CardContent>
               </Card>
             </div>
@@ -470,14 +487,15 @@ export default function Home() {
                 </p>
               </div>
 
-              <ButtonLink
-                href="/create"
+              <AuthAwareButtonLink
+                guestHref="/create"
+                authenticatedHref="/dashboard/drops/new"
                 size="lg"
                 className="h-12 shrink-0 rounded-full px-7 text-base"
               >
                 Create a Drop
                 <ArrowRightIcon data-icon="inline-end" />
-              </ButtonLink>
+              </AuthAwareButtonLink>
             </div>
           </div>
         </section>

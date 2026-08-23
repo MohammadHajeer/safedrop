@@ -1,33 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 import { LoginForm } from "@/components/auth/login-form";
 import { AuthLayout } from "@/components/public/auth-layout";
 import { PublicShell } from "@/components/public/public-shell";
-import { getCurrentUser } from "@/lib/server/auth";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const metadata: Metadata = {
   title: "Sign in",
   description: "Sign in to manage your SafeDrop shares.",
 };
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ next?: string }>;
-}) {
-  const user = await getCurrentUser();
-
-  if (user) {
-    redirect("/dashboard");
-  }
-
-  const { next } = await searchParams;
-
-  const nextPath =
-    next?.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
-
+export default function LoginPage() {
   return (
     <PublicShell>
       <AuthLayout
@@ -35,7 +20,9 @@ export default async function LoginPage({
         title="Sign in to SafeDrop"
         description="Pick up where you left off and manage your temporary shares."
       >
-        <LoginForm nextPath={nextPath} />
+        <Suspense fallback={<Skeleton className="h-68 w-full rounded-2xl" />}>
+          <LoginForm />
+        </Suspense>
 
         <div className="mt-7 border-t pt-6">
           <p className="text-center text-sm text-muted-foreground">

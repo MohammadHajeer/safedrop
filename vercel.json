@@ -33,7 +33,11 @@
       "destination": { "service": "backend" }
     },
     {
-      "source": "/(.*)",
+      "source": "/_next/image",
+      "destination": "/_vercel/image"
+    },
+    {
+      "source": "/((?!_next/image(?:/|$)|_vercel/image(?:/|$)).*)",
       "destination": { "service": "frontend" }
     }
   ]

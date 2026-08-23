@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent } from "react";
 
 import { useDrops } from "@/hooks/use-drops";
@@ -79,13 +79,30 @@ function DropMobileCard({ drop }: { drop: Drop }) {
   );
 }
 
-export function DropsList({
-  params,
-}: {
-  params: Required<Pick<GetDropsParams, "page" | "page_size" | "status">> &
-    Pick<GetDropsParams, "search">;
-}) {
+export function DropsListSkeleton() {
+  return (
+    <div className="space-y-6" aria-label="Loading Drops">
+      <Skeleton className="h-16 rounded-2xl" />
+      {[1, 2, 3].map((item) => (
+        <Skeleton key={item} className="h-24 rounded-2xl" />
+      ))}
+    </div>
+  );
+}
+
+export function DropsList() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const parsedPage = Number.parseInt(searchParams.get("page") ?? "1", 10);
+  const rawStatus = searchParams.get("status");
+  const params = {
+    page: Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1,
+    page_size: 10,
+    status: statuses.includes(rawStatus as DropStatus)
+      ? (rawStatus as DropStatus)
+      : ("active" as const),
+    search: searchParams.get("search")?.trim().slice(0, 100) || undefined,
+  };
   const query = useDrops(params);
   const data = query.data;
   const totalPages = Math.max(
@@ -116,6 +133,7 @@ export function DropsList({
           </Label>
           <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
+            key={params.search ?? ""}
             id="drop-search"
             name="search"
             defaultValue={params.search}
