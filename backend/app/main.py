@@ -1,3 +1,4 @@
+from app.core.config import settings
 from app.routers import (
     admin_stats_router,
     auth_router,
@@ -10,6 +11,42 @@ from app.routers import (
 )
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.types import ASGIApp, Receive, Scope, Send
+
+
+class ServicePrefixMiddleware:
+    """Remove Vercel's public service prefix before FastAPI route matching."""
+
+    def __init__(self, app: ASGIApp, prefix: str) -> None:
+        self.app = app
+        self.prefix = prefix
+        self.prefix_bytes = prefix.encode()
+
+    async def __call__(
+        self,
+        scope: Scope,
+        receive: Receive,
+        send: Send,
+    ) -> None:
+        if scope["type"] in {"http", "websocket"}:
+            path = scope.get("path", "")
+
+            if path == self.prefix or path.startswith(f"{self.prefix}/"):
+                scope = {
+                    **scope,
+                    "path": path[len(self.prefix) :] or "/",
+                    "root_path": f"{scope.get('root_path', '')}{self.prefix}",
+                }
+
+                raw_path = scope.get("raw_path")
+
+                if isinstance(raw_path, bytes) and raw_path.startswith(
+                    self.prefix_bytes
+                ):
+                    scope["raw_path"] = raw_path[len(self.prefix_bytes) :] or b"/"
+
+        await self.app(scope, receive, send)
+
 
 app = FastAPI(
     title="SafeDrop API",
@@ -21,14 +58,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(ServicePrefixMiddleware, prefix="/svc/api")
 
 
 @app.get("/", tags=["General"])

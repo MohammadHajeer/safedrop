@@ -15,6 +15,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, delete, text
 from sqlalchemy.orm import Session, sessionmaker
 
+if settings.test_database_url is None:
+    raise RuntimeError("TEST_DATABASE_URL is required to run the backend tests")
+
 test_engine = create_engine(settings.test_database_url)
 
 TestSessionLocal = sessionmaker(

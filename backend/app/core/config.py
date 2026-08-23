@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env")
 
     database_url: str
-    test_database_url: str
+    test_database_url: str | None = None
     jwt_secret: str
     jwt_algorithm: str
     access_token_expire_minutes: int
@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     test_aws_region: str | None = None
 
     cookie_secure: bool = False
+    cors_origins: list[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
 
 
 settings = Settings()

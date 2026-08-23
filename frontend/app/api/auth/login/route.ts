@@ -46,8 +46,6 @@ export async function POST(request: Request) {
 
     const refreshSetCookies = getBackendSetCookies(backendResponse);
 
-    console.log("FastAPI Set-Cookie:", refreshSetCookies);
-
     applySessionUpdate(response, {
       accessToken: data.access_token,
       refreshSetCookies,
