@@ -6,7 +6,8 @@ This guide describes the repository's current local workflow. The root orchestra
 
 - Node.js compatible with the declared Next.js and tooling dependencies
 - pnpm; the root manifest declares `pnpm@11.20.0`
-- Python with `venv` support
+- Python 3.14
+- [uv](https://docs.astral.sh/uv/) for the backend environment and lockfile
 - A PostgreSQL database for development and a separate PostgreSQL test database
 - An S3-compatible private bucket and credentials
 
@@ -24,13 +25,19 @@ The root pnpm workspace includes `frontend` and installs Husky through the root 
 
 ## Create the Python environment
 
+`backend/pyproject.toml` is the backend dependency source of truth and
+`backend/uv.lock` pins the full resolved environment. The `dev` group contains
+pytest, Ruff, HTTPX, and local Uvicorn tooling; it is explicit rather than part of
+the production install.
+
 ### Windows PowerShell
 
 From the repository root:
 
 ```powershell
-py -m venv backend\.venv
-backend\.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
+Set-Location backend
+uv sync --group dev
+Set-Location ..
 ```
 
 This path is required by the checked-in root `dev:backend` and lint-staged commands.
@@ -38,9 +45,9 @@ This path is required by the checked-in root `dev:backend` and lint-staged comma
 ### macOS or Linux
 
 ```bash
-python3 -m venv backend/.venv
-source backend/.venv/bin/activate
-python -m pip install -r backend/requirements.txt
+cd backend
+uv sync --group dev
+source .venv/bin/activate
 ```
 
 The root backend script is not cross-platform. On macOS or Linux, start FastAPI separately from `backend` with `python -m uvicorn app.main:app --reload`.

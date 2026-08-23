@@ -104,8 +104,9 @@ internal binding calls such as `/login` remain unchanged.
 
 `backend/.python-version` selects Python 3.14. Vercel's current Python runtime
 supports 3.12, 3.13, and 3.14, and the complete pinned dependency set is already
-installed and tested locally on Python 3.14.7. `backend/requirements.txt` remains
-the dependency manifest. No Vercel shim and no Uvicorn start command are needed.
+installed and tested locally on Python 3.14.7. `backend/pyproject.toml` is the
+PEP 621 dependency source of truth and `backend/uv.lock` records the complete
+resolution. No Vercel shim and no Uvicorn start command are needed.
 
 ## Environment variables
 

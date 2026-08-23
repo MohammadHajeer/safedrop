@@ -89,7 +89,8 @@ safedrop/
 │   ├── app/                  # FastAPI app, models, routers, and services
 │   ├── tests/                # API and storage integration tests
 │   ├── unit_tests/           # Focused backend unit tests
-│   └── requirements.txt
+│   ├── pyproject.toml         # PEP 621 dependencies and Python tool settings
+│   └── uv.lock               # Reproducible Python dependency resolution
 ├── frontend/
 │   ├── app/                  # App Router pages and BFF Route Handlers
 │   ├── components/           # Product and UI components
