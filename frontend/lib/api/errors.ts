@@ -14,6 +14,19 @@ export function getApiErrorMessage(error: unknown): string {
     if (typeof detail === "string") {
       return detail;
     }
+
+    if (Array.isArray(detail)) {
+      const messages = detail
+        .map((item) => {
+          if (!item || typeof item !== "object" || !("msg" in item)) return null;
+          return typeof item.msg === "string" ? item.msg : null;
+        })
+        .filter((message): message is string => Boolean(message));
+
+      if (messages.length > 0) {
+        return messages.join(" ");
+      }
+    }
   }
 
   return error instanceof Error ? error.message : "Something went wrong";

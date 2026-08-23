@@ -16,5 +16,9 @@ export type SharedDrop = {
 };
 
 export async function getSharedDrop(shareToken: string): Promise<SharedDrop> {
-  return apiFetch<SharedDrop>(`/d/${encodeURIComponent(shareToken)}`);
+  // This endpoint consumes exactly one Drop view. Keep this as one deliberate,
+  // uncached request and do not add automatic retries or client refetching.
+  return apiFetch<SharedDrop>(`/d/${encodeURIComponent(shareToken)}`, {
+    cache: "no-store",
+  });
 }
